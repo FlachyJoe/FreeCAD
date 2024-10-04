@@ -68,6 +68,12 @@ FeaturePrimitive::FeaturePrimitive()
 
 App::DocumentObjectExecReturn* FeaturePrimitive::execute(const TopoDS_Shape& primitive)
 {
+    if (onlyHasToRefine()){
+        TopoShape result = refineShapeIfActive(rawShape);
+        Shape.setValue(result);
+        return App::DocumentObject::StdReturn;
+    }
+
     try {
         //transform the primitive in the correct coordinance
         FeatureAddSub::execute();
@@ -131,6 +137,9 @@ App::DocumentObjectExecReturn* FeaturePrimitive::execute(const TopoDS_Shape& pri
             Shape.setValue(boolOp);
             return App::DocumentObject::StdReturn;
         }
+
+        // store shape before refinement
+        this->rawShape = solidBoolOp;
         solidBoolOp = refineShapeIfActive(solidBoolOp);
         Shape.setValue(getSolid(solidBoolOp));
     }
