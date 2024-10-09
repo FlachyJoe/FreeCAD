@@ -134,6 +134,7 @@ bool FeatureExtrude::hasTaperedAngle() const
 
 TopoShape FeatureExtrude::makeShellFromUpToShape(TopoShape shape, TopoShape sketchshape, gp_Dir dir){
 
+    TopoShape result(shape);
     // Find nearest/furthest face
     std::vector<Part::cutTopoShapeFaces> cfaces =
         Part::findAllFacesCutBy(shape, sketchshape, dir);
@@ -162,9 +163,9 @@ TopoShape FeatureExtrude::makeShellFromUpToShape(TopoShape shape, TopoShape sket
                 faceList.push_back(face);
             }
         }
-        return shape.makeElementCompound(faceList);
+        return result.makeElementCompound(faceList);
     }
-    return shape;
+    return result;
 }
 
 // TODO: Toponaming April 2024 Deprecated in favor of TopoShape method.  Remove when possible.
@@ -446,6 +447,7 @@ void FeatureExtrude::updateProperties(const std::string &method)
     }
     else if (method == "UpToShape") {
         isReversedEnabled = true;
+        isMidplaneEnabled = true;
         isUpToShapeEnabled = true;
     }
 
@@ -612,6 +614,7 @@ App::DocumentObjectExecReturn* FeatureExtrude::buildExtrusion(ExtrudeOptions opt
                 dir.Reverse();
             }
 
+            TopoShape validUpTo;
             TopoShape upToShape;
             int faceCount = 1;
             // Find a valid shape, face or datum plane to extrude up to
@@ -633,13 +636,14 @@ App::DocumentObjectExecReturn* FeatureExtrude::buildExtrusion(ExtrudeOptions opt
             if (faceCount == 1) {
                 getUpToFace(upToShape, base, sketchshape, method, dir);
                 addOffsetToFace(upToShape, dir, Offset.getValue());
+                validUpTo = upToShape;
             }
             else{
                 if (fabs(Offset.getValue()) > Precision::Confusion()){
                     return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Extrude: Can only offset one face"));
                 }
                 // open the shell by removing the furthest face
-                upToShape = makeShellFromUpToShape(upToShape, sketchshape, dir);
+                validUpTo = makeShellFromUpToShape(upToShape, sketchshape, dir);
             }
 
             if (!supportface.hasSubShape(TopAbs_WIRE)) {
@@ -650,7 +654,7 @@ App::DocumentObjectExecReturn* FeatureExtrude::buildExtrusion(ExtrudeOptions opt
                     base.isNull() ? TopoShape::PrismMode::None : TopoShape::PrismMode::CutFromBase;
                 prism = base.makeElementPrismUntil(sketchshape,
                                                    supportface,
-                                                   upToShape,
+                                                   validUpTo,
                                                    dir,
                                                    mode,
                                                    false /*CheckUpToFaceLimits.getValue()*/);
@@ -703,10 +707,24 @@ App::DocumentObjectExecReturn* FeatureExtrude::buildExtrusion(ExtrudeOptions opt
                 prism.makeElementPrismUntil(_base,
                                             sketchshape,
                                             supportface,
-                                            upToShape,
+                                            validUpTo,
                                             dir,
                                             TopoShape::PrismMode::None,
                                             true /*CheckUpToFaceLimits.getValue()*/);
+                if (method == "UpToShape" && Midplane.getValue()){
+                    dir.Reverse();
+                    TopoShape prism2;
+                    validUpTo = makeShellFromUpToShape(upToShape, sketchshape, dir);
+                    prism2.makeElementPrismUntil(_base,
+                                                sketchshape,
+                                                supportface,
+                                                validUpTo,
+                                                dir,
+                                                TopoShape::PrismMode::None,
+                                                true /*CheckUpToFaceLimits.getValue()*/,
+                                                "PRISM2");
+                    prism.makeElementCompound({prism, prism2});
+                }
             }
             catch (Base::Exception& e) {
                 if (method == "UpToShape" && faceCount > 1){
