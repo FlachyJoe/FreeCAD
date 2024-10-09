@@ -731,6 +731,8 @@ void TaskExtrudeParameters::setCheckboxes(Mode mode, Type type)
     else if (mode == Mode::ToShape) {
         isReversedEnabled = true;
         isShapeEditVisible = true;
+        isMidplaneEnabled = true;
+        isMidplaneVisible = true;
 
         if (!ui->checkBoxAllFaces->isChecked()) {
             ui->buttonShapeFace->setChecked(true);
