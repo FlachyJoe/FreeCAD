@@ -40,6 +40,8 @@
 #include "FeatureRevolution.h"
 #include "Mod/Part/App/TopoShapeOpCode.h"
 
+FC_LOG_LEVEL_INIT("PartDesign", true, true)
+
 using namespace PartDesign;
 
 namespace PartDesign {
@@ -103,13 +105,7 @@ App::DocumentObjectExecReturn* Revolution::execute()
 
     double angle2 = Base::toRadians(Angle2.getValue());
 
-    TopoShape sketchshape;
-    try {
-        sketchshape = getTopoShapeVerifiedFace();
-    }
-    catch (const Base::Exception& e) {
-        return new App::DocumentObjectExecReturn(e.what());
-    }
+    TopoShape sketchshape = getTopoShapeVerifiedFace();
 
     // if the Base property has a valid shape, fuse the AddShape into it
     TopoShape base;
@@ -167,7 +163,14 @@ App::DocumentObjectExecReturn* Revolution::execute()
 
         // Create a fresh support even when base exists so that it can be used for patterns
         TopoShape result(0);
-        TopoShape supportface = getSupportFace();
+        TopoShape supportface(0);
+        try {
+            supportface = getSupportFace();
+        }
+        catch(...) {
+            //do nothing, null shape is handle below
+        }
+
         supportface.move(invObjLoc);
 
         if (method == RevolMethod::ToFace || method == RevolMethod::ToFirst
