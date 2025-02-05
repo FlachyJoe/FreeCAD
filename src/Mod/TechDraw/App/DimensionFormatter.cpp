@@ -330,27 +330,32 @@ QString DimensionFormatter::formatValueToSpec(const double value, const QString&
     return formattedValue;
 }
 
-bool DimensionFormatter::isNumericFormat(const QString& formatSpecifier) const
+//find the %x.y tag in formatSpecifier
+bool DimensionFormatter::getNumericFormat(const QString& formatSpecifier, int& pos, QString& match) const
 {
     QRegularExpression rxFormat(QStringLiteral("%[+-]?[0-9]*\\.*[0-9]*[aefgwAEFGW]")); //printf double format spec
     QRegularExpressionMatch rxMatch;
-    int pos = formatSpecifier.indexOf(rxFormat, 0, &rxMatch);
+    pos = formatSpecifier.indexOf(rxFormat, 0, &rxMatch);
     if (pos != -1)  {
+        match = rxMatch.captured(0);
         return true;
     }
     return false;
 }
 
-//TODO: similar code here and above
+bool DimensionFormatter::isNumericFormat(const QString& formatSpecifier) const
+{
+    int unusedPos;
+    QString unusedMatch;
+    return getNumericFormat(formatSpecifier, unusedPos, unusedMatch);
+}
+
 QStringList DimensionFormatter::getPrefixSuffixSpec(const QString& fSpec) const
 {
     QStringList result;
-    //find the %x.y tag in FormatSpec
-    QRegularExpression rxFormat(QStringLiteral("%[+-]?[0-9]*\\.*[0-9]*[aefgwAEFGW]")); //printf double format spec
-    QRegularExpressionMatch rxMatch;
-    int pos = fSpec.indexOf(rxFormat, 0, &rxMatch);
-    if (pos != -1)  {
-        QString match = rxMatch.captured(0);                                  //entire capture of rx
+    int pos;
+    QString match;
+    if (getNumericFormat(fSpec, pos, match))  {
         QString formatPrefix = fSpec.left(pos);
         result.append(formatPrefix);
         QString formatSuffix = fSpec.right(fSpec.size() - pos - match.size());
@@ -372,8 +377,8 @@ std::string DimensionFormatter::getDefaultFormatSpec(bool isToleranceFormat) con
     QString formatSpec;
     QString qPrefix;
     if (prefFormat.empty()) {
-        QString format1 = QString::fromStdString("%.");
-        QString format2 = QString::fromStdString("f");
+        QString format1 = QStringLiteral("%.");
+        QString format2 = QStringLiteral("f");
         int precision;
         if (m_dimension->useDecimals()) {
             precision = Base::UnitsApi::getDecimals();
@@ -387,18 +392,15 @@ std::string DimensionFormatter::getDefaultFormatSpec(bool isToleranceFormat) con
         if (!prefix.empty()) {
             qPrefix = QString::fromUtf8(prefix.data(), prefix.size());
         }
-
         formatSpec = qPrefix + format1 + formatPrecision + format2;
     } else {
-
         std::string prefix = m_dimension->getPrefixForDimType();
         qPrefix = QString::fromUtf8(prefix.data(), prefix.size());
         formatSpec = qPrefix + QString::fromStdString(prefFormat);
-
     }
 
     if (isToleranceFormat) {
-        formatSpec.replace(QString::fromUtf8("%"), QString::fromUtf8("%+"));
+        formatSpec.replace(QStringLiteral("%"), QStringLiteral("%+"));
     }
 
     return formatSpec.toStdString();
@@ -412,10 +414,9 @@ bool DimensionFormatter::isTooSmall(const double value, const QString& formatSpe
         return false;
     }
 
-    QRegularExpression rxFormat(QStringLiteral("%[+-]?[0-9]*\\.*([0-9]*)[aefgwAEFGW]")); //printf double format spec
-    QRegularExpressionMatch rxMatch = rxFormat.match(formatSpec);
-    if (rxMatch.hasMatch()) {
-        QString decimalGroup = rxMatch.captured(1);
+    int unusedPos;
+    QString decimalGroup;
+    if (getNumericFormat(formatSpec, unusedPos, decimalGroup)) {
         int factor = decimalGroup.toInt();
         double minValue = pow(10.0, -factor);
         if (std::fabs(value) < minValue) {
