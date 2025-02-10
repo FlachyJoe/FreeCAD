@@ -68,7 +68,7 @@ class PropertyBag(object):
     CustomPropertyGroupDefault = "User"
 
     def __init__(self, obj):
-        obj.addProperty(
+        obj.addLockedProperty(
             "App::PropertyStringList",
             self.CustomPropertyGroups,
             "Base",
@@ -121,7 +121,7 @@ class PropertyBag(object):
         if not group in groups:
             groups.append(group)
             self.obj.CustomPropertyGroups = groups
-        self.obj.addProperty(propertyType, name, group, desc)
+        self.obj.addLockedProperty(propertyType, name, group, desc)
         return name
 
     def refreshCustomPropertyGroups(self):
