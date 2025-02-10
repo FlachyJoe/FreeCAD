@@ -119,7 +119,7 @@ class TestMultiTransform(unittest.TestCase):
         Link.Label='Body001'
         # Act
         #  There are properties on those objects with values
-        # Link.addProperty("App::PropertyInteger","test2","Table2")
+        # Link.addLockedProperty("App::PropertyInteger","test2","Table2")
         # Assert
         self.assertAlmostEqual(Body.Shape.Volume, 990)
         self.assertAlmostEqual(Link.Shape.Volume, 990)
