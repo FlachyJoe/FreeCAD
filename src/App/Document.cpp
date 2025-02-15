@@ -2179,6 +2179,7 @@ bool Document::saveToFile(const char* filename) const
     // open extra scope to close ZipWriter properly
     {
         Base::ofstream file(tmp, std::ios::out | std::ios::binary);
+
         Base::ZipWriter writer(file);
         if (!file.is_open()) {
             throw Base::FileException("Failed to open file", tmp);
@@ -2207,6 +2208,10 @@ bool Document::saveToFile(const char* filename) const
 
         if (writer.hasErrors()) {
             throw Base::FileException("Failed to write all data to file", tmp);
+        }
+
+        if ( errno == ENOSPC){
+            throw Base::FileException("No space left on the disk");
         }
 
         GetApplication().signalSaveDocument(*this);
