@@ -29,7 +29,8 @@
 #pragma once
 
 #include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <Message_ProgressRange.hxx>
+# include <Message_ProgressRange.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 class FCBRepAlgoAPIHelper
 {
