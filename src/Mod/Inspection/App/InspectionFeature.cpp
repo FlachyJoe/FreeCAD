@@ -112,7 +112,7 @@ InspectActualShape::InspectActualShape(const Part::TopoShape& shape)
 void InspectActualShape::fetchPoints(double deflection)
 {
     // get points from faces or sub-sampled edges
-    TopTools_IndexedMapOfShape mapOfShapes;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapOfShapes;
     TopExp::MapShapes(_rShape.getShape(), TopAbs_FACE, mapOfShapes);
     if (!mapOfShapes.IsEmpty()) {
         std::vector<Data::ComplexGeoData::Facet> faces;
