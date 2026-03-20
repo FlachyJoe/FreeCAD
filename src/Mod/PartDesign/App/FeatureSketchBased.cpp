@@ -967,7 +967,7 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
         TopTools_IndexedDataMapOfShapeListOfShape vertex2Edge;
         TopExp::MapShapesAndAncestors(wire, TopAbs_VERTEX, TopAbs_EDGE, vertex2Edge);
 
-        for (Standard_Integer i = 1; i <= distss.NbSolution(); i++) {
+        for (int i = 1; i <= distss.NbSolution(); i++) {
             if (distss.PointOnShape1(i).Distance(distss.PointOnShape2(i)) > Precision::Confusion()) {
                 continue;
             }
@@ -981,7 +981,7 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
                 gp_Dir dir = line.Direction().Crossed(normal);
                 gp_Pnt pnt = distss.PointOnShape1(i);
 
-                Standard_Real t;
+                double t;
                 distss.ParOnEdgeS1(i, t);
                 gp_Pnt p_eps1 = adapt.Value(
                     std::max<double>(adapt.FirstParameter(), t - 10 * Precision::Confusion())
@@ -991,8 +991,8 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
                 );
 
                 // now check if we get a change in the sign of the distances
-                Standard_Real dist_p_eps1_pnt = gp_Vec(p_eps1, pnt).Dot(gp_Vec(dir));
-                Standard_Real dist_p_eps2_pnt = gp_Vec(p_eps2, pnt).Dot(gp_Vec(dir));
+                double dist_p_eps1_pnt = gp_Vec(p_eps1, pnt).Dot(gp_Vec(dir));
+                double dist_p_eps2_pnt = gp_Vec(p_eps2, pnt).Dot(gp_Vec(dir));
                 // distance to the plane must be noticeable
                 if (fabs(dist_p_eps1_pnt) > 5 * Precision::Confusion()
                     && fabs(dist_p_eps2_pnt) > 5 * Precision::Confusion()) {
@@ -1016,8 +1016,8 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
                     // from the first edge get a point next to the intersection point
                     const TopoDS_Edge& edge1 = TopoDS::Edge(edges.First());
                     BRepAdaptor_Curve adapt1(edge1);
-                    Standard_Real dist1 = adapt1.Value(adapt1.FirstParameter()).SquareDistance(pnt);
-                    Standard_Real dist2 = adapt1.Value(adapt1.LastParameter()).SquareDistance(pnt);
+                    double dist1 = adapt1.Value(adapt1.FirstParameter()).SquareDistance(pnt);
+                    double dist2 = adapt1.Value(adapt1.LastParameter()).SquareDistance(pnt);
                     gp_Pnt p_eps1;
                     if (dist1 < dist2) {
                         p_eps1 = adapt1.Value(adapt1.FirstParameter() + 2 * Precision::Confusion());
@@ -1029,8 +1029,8 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
                     // from the second edge get a point next to the intersection point
                     const TopoDS_Edge& edge2 = TopoDS::Edge(edges.Last());
                     BRepAdaptor_Curve adapt2(edge2);
-                    Standard_Real dist3 = adapt2.Value(adapt2.FirstParameter()).SquareDistance(pnt);
-                    Standard_Real dist4 = adapt2.Value(adapt2.LastParameter()).SquareDistance(pnt);
+                    double dist3 = adapt2.Value(adapt2.FirstParameter()).SquareDistance(pnt);
+                    double dist4 = adapt2.Value(adapt2.LastParameter()).SquareDistance(pnt);
                     gp_Pnt p_eps2;
                     if (dist3 < dist4) {
                         p_eps2 = adapt2.Value(adapt2.FirstParameter() + 2 * Precision::Confusion());
@@ -1040,8 +1040,8 @@ bool ProfileBased::checkLineCrossesFace(const gp_Lin& line, const TopoDS_Face& f
                     }
 
                     // now check if we get a change in the sign of the distances
-                    Standard_Real dist_p_eps1_pnt = gp_Vec(p_eps1, pnt).Dot(gp_Vec(dir));
-                    Standard_Real dist_p_eps2_pnt = gp_Vec(p_eps2, pnt).Dot(gp_Vec(dir));
+                    double dist_p_eps1_pnt = gp_Vec(p_eps1, pnt).Dot(gp_Vec(dir));
+                    double dist_p_eps2_pnt = gp_Vec(p_eps2, pnt).Dot(gp_Vec(dir));
                     // distance to the plane must be noticeable
                     if (fabs(dist_p_eps1_pnt) > Precision::Confusion()
                         && fabs(dist_p_eps2_pnt) > Precision::Confusion()) {

@@ -133,7 +133,7 @@ static void throw_exc(const int theSignal, siginfo_t* /*theSigInfo*/, const Stan
         case SIGFPE:
             sigaddset(&set, SIGFPE);
             sigprocmask(SIG_UNBLOCK, &set, nullptr);
-            OSD::SetFloatingSignal(Standard_True);
+            OSD::SetFloatingSignal(true);
             OSD_SIGNAL_THROW(Standard_NumericError, "SIGFPE Arithmetic exception detected");
             break;
         default:

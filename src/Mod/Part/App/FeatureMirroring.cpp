@@ -337,7 +337,7 @@ App::DocumentObjectExecReturn* Mirroring::execute()
                 );
 
                 // actually transform the geometry (copy=true to create new shape)
-                BRepBuilderAPI_Transform mkTrf(shape.getShape(), trsf, Standard_True);
+                BRepBuilderAPI_Transform mkTrf(shape.getShape(), trsf, true);
                 shape = TopoShape(mkTrf.Shape());
             }
         }

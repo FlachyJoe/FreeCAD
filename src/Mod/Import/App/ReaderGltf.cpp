@@ -60,7 +60,7 @@ void ReaderGltf::read(Handle(TDocStd_Document) hDoc)
     aReader.SetParallel(true);
 
     TCollection_AsciiString filename(file.filePath().c_str());
-    Standard_Boolean ret = aReader.Perform(filename, Message_ProgressRange());
+    bool ret = aReader.Perform(filename, Message_ProgressRange());
     if (!ret) {
         throw Base::FileException("Cannot read from file: ", file);
     }
@@ -75,7 +75,7 @@ void ReaderGltf::processDocument(Handle(TDocStd_Document) hDoc)
 
     TDF_LabelSequence shapeLabels;
     aShapeTool->GetShapes(shapeLabels);
-    for (Standard_Integer i = 1; i <= shapeLabels.Length(); i++) {
+    for (int i = 1; i <= shapeLabels.Length(); i++) {
         auto topLevelshape = shapeLabels.Value(i);
         TopoDS_Shape shape = aShapeTool->GetShape(topLevelshape);
         if (!shape.IsNull()) {
@@ -104,7 +104,7 @@ TopoDS_Shape ReaderGltf::processSubShapes(
 
     BRep_Builder builder;
     builder.MakeCompound(compound);
-    for (Standard_Integer i = 1; i <= subShapeLabels.Length(); i++) {
+    for (int i = 1; i <= subShapeLabels.Length(); i++) {
         auto faceLabel = subShapeLabels.Value(i);
 
         // OCCT handles colors of a glTF with material labels but the ImportOCAF(2) class

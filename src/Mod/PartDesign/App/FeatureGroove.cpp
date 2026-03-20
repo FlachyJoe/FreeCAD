@@ -216,7 +216,7 @@ App::DocumentObjectExecReturn* Groove::execute()
                     TopoDS::Face(upToFace.getShape()),
                     nullptr,
                     Part::RevolMode::CutFromBase,
-                    Standard_True
+                    true
                 );
             }
             catch (Standard_Failure&) {
@@ -406,7 +406,7 @@ void Groove::generateRevolution(
     const gp_Ax1& axis,
     RevolMethod method,
     RevolMode Mode,
-    Standard_Boolean Modify
+    bool Modify
 )
 {
     if (method == RevolMethod::ToFirst || method == RevolMethod::ToFace

@@ -211,7 +211,7 @@ PyObject* ShapeFix_WirePy::isLoaded(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->IsLoaded();
+    bool ok = getShapeFix_WirePtr()->IsLoaded();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -221,7 +221,7 @@ PyObject* ShapeFix_WirePy::isReady(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->IsReady();
+    bool ok = getShapeFix_WirePtr()->IsReady();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -271,7 +271,7 @@ PyObject* ShapeFix_WirePy::perform(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->Perform();
+    bool ok = getShapeFix_WirePtr()->Perform();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -281,7 +281,7 @@ PyObject* ShapeFix_WirePy::fixReorder(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixReorder();
+    bool ok = getShapeFix_WirePtr()->FixReorder();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -327,7 +327,7 @@ PyObject* ShapeFix_WirePy::fixConnected(PyObject* args)
     double prec = -1.0;
     if (PyArg_ParseTuple(args, "|d", &prec)) {
         try {
-            Standard_Boolean ok = getShapeFix_WirePtr()->FixConnected(prec);
+            bool ok = getShapeFix_WirePtr()->FixConnected(prec);
             return Py::new_reference_to(Py::Boolean(ok));
         }
         catch (const Standard_Failure& e) {
@@ -340,7 +340,7 @@ PyObject* ShapeFix_WirePy::fixConnected(PyObject* args)
     int num;
     if (PyArg_ParseTuple(args, "id", &num, &prec)) {
         try {
-            Standard_Boolean ok = getShapeFix_WirePtr()->FixConnected(num, prec);
+            bool ok = getShapeFix_WirePtr()->FixConnected(num, prec);
             return Py::new_reference_to(Py::Boolean(ok));
         }
         catch (const Standard_Failure& e) {
@@ -364,7 +364,7 @@ PyObject* ShapeFix_WirePy::fixEdgeCurves(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixEdgeCurves();
+    bool ok = getShapeFix_WirePtr()->FixEdgeCurves();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -376,8 +376,8 @@ PyObject* ShapeFix_WirePy::fixDegenerated(PyObject* args)
     }
 
     try {
-        Standard_Boolean ok = num > -1 ? getShapeFix_WirePtr()->FixDegenerated(num)
-                                       : getShapeFix_WirePtr()->FixDegenerated();
+        bool ok = num > -1 ? getShapeFix_WirePtr()->FixDegenerated(num)
+                           : getShapeFix_WirePtr()->FixDegenerated();
         return Py::new_reference_to(Py::Boolean(ok));
     }
     catch (const Standard_Failure& e) {
@@ -392,7 +392,7 @@ PyObject* ShapeFix_WirePy::fixSelfIntersection(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixSelfIntersection();
+    bool ok = getShapeFix_WirePtr()->FixSelfIntersection();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -401,7 +401,7 @@ PyObject* ShapeFix_WirePy::fixLacking(PyObject* args)
     PyObject* force = Py_False;
     if (PyArg_ParseTuple(args, "|O!", &PyBool_Type, &force)) {
         try {
-            Standard_Boolean ok = getShapeFix_WirePtr()->FixLacking(Base::asBoolean(force));
+            bool ok = getShapeFix_WirePtr()->FixLacking(Base::asBoolean(force));
             return Py::new_reference_to(Py::Boolean(ok));
         }
         catch (const Standard_Failure& e) {
@@ -415,7 +415,7 @@ PyObject* ShapeFix_WirePy::fixLacking(PyObject* args)
     force = Py_False;
     if (PyArg_ParseTuple(args, "i|O!", &num, &PyBool_Type, &force)) {
         try {
-            Standard_Boolean ok = getShapeFix_WirePtr()->FixLacking(num, Base::asBoolean(force));
+            bool ok = getShapeFix_WirePtr()->FixLacking(num, Base::asBoolean(force));
             return Py::new_reference_to(Py::Boolean(ok));
         }
         catch (const Standard_Failure& e) {
@@ -440,7 +440,7 @@ PyObject* ShapeFix_WirePy::fixClosed(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixClosed(prec);
+    bool ok = getShapeFix_WirePtr()->FixClosed(prec);
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -450,7 +450,7 @@ PyObject* ShapeFix_WirePy::fixGaps3d(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixGaps3d();
+    bool ok = getShapeFix_WirePtr()->FixGaps3d();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -460,7 +460,7 @@ PyObject* ShapeFix_WirePy::fixGaps2d(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixGaps2d();
+    bool ok = getShapeFix_WirePtr()->FixGaps2d();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -473,7 +473,7 @@ PyObject* ShapeFix_WirePy::fixGap3d(PyObject* args)
     }
 
     try {
-        Standard_Boolean ok = getShapeFix_WirePtr()->FixGap3d(num, Base::asBoolean(convert));
+        bool ok = getShapeFix_WirePtr()->FixGap3d(num, Base::asBoolean(convert));
         return Py::new_reference_to(Py::Boolean(ok));
     }
     catch (const Standard_Failure& e) {
@@ -491,7 +491,7 @@ PyObject* ShapeFix_WirePy::fixGap2d(PyObject* args)
     }
 
     try {
-        Standard_Boolean ok = getShapeFix_WirePtr()->FixGap2d(num, Base::asBoolean(convert));
+        bool ok = getShapeFix_WirePtr()->FixGap2d(num, Base::asBoolean(convert));
         return Py::new_reference_to(Py::Boolean(ok));
     }
     catch (const Standard_Failure& e) {
@@ -508,7 +508,7 @@ PyObject* ShapeFix_WirePy::fixSeam(PyObject* args)
     }
 
     try {
-        Standard_Boolean ok = getShapeFix_WirePtr()->FixSeam(num);
+        bool ok = getShapeFix_WirePtr()->FixSeam(num);
         return Py::new_reference_to(Py::Boolean(ok));
     }
     catch (const Standard_Failure& e) {
@@ -523,7 +523,7 @@ PyObject* ShapeFix_WirePy::fixShifted(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixShifted();
+    bool ok = getShapeFix_WirePtr()->FixShifted();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -533,7 +533,7 @@ PyObject* ShapeFix_WirePy::fixNotchedEdges(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixNotchedEdges();
+    bool ok = getShapeFix_WirePtr()->FixNotchedEdges();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 
@@ -543,7 +543,7 @@ PyObject* ShapeFix_WirePy::fixTails(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_WirePtr()->FixTails();
+    bool ok = getShapeFix_WirePtr()->FixTails();
     return Py::new_reference_to(Py::Boolean(ok));
 }
 

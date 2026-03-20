@@ -115,7 +115,7 @@ Base::Vector3d getFaceNormalFromPoint(Base::Vector3d& point, TopoDS_Face& face)
     Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
     auto pt = Base::convertTo<gp_Pnt>(point);
 
-    Standard_Real u, v;
+    double u, v;
     GeomAPI_ProjectPointOnSurf proj(pt, surf);
     proj.LowerDistanceParameters(u, v);
     GeomLProp_SLProps props(surf, u, v, 1, 0.01);
@@ -291,7 +291,7 @@ std::optional<DraggerPlacementPropsWithNormals> getDraggerPlacementFromPlaneAndF
         IntAna_QuadQuadGeo intersector(facePlane, plane, Precision::Angular(), Precision::Confusion());
         if (intersector.IsDone() && intersector.NbSolutions() > 0) {
             gp_Lin line = intersector.Line(1);
-            Standard_Real u = ElCLib::Parameter(line, Base::convertTo<gp_Pnt>(cog));
+            double u = ElCLib::Parameter(line, Base::convertTo<gp_Pnt>(cog));
             auto pos = Base::convertTo<Base::Vector3d>(ElCLib::Value(u, line));
             auto lineDir = Base::convertTo<Base::Vector3d>(line.Direction());
             auto faceNormal = Base::convertTo<Base::Vector3d>(facePlane.Axis().Direction());

@@ -136,12 +136,7 @@ void LoftWidget::findShapes()
             }
             // or all children are edges
             else if (hEdges->Length() == numChilds) {
-                ShapeAnalysis_FreeBounds::ConnectEdgesToWires(
-                    hEdges,
-                    Precision::Confusion(),
-                    Standard_False,
-                    hWires
-                );
+                ShapeAnalysis_FreeBounds::ConnectEdgesToWires(hEdges, Precision::Confusion(), false, hWires);
                 if (hWires->Length() == 1) {
                     shape = hWires->Value(1);
                 }

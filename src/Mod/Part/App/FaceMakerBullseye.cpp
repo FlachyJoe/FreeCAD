@@ -97,7 +97,7 @@ void FaceMakerBullseye::Build_Essence()
         for (TopoDS_Wire& w : myWires) {
             builder.Add(comp, BRepBuilderAPI_Copy(w).Shape());
         }
-        BRepLib_FindSurface planeFinder(comp, -1, /*OnlyPlane=*/Standard_True);
+        BRepLib_FindSurface planeFinder(comp, -1, /*OnlyPlane=*/true);
         if (!planeFinder.Found()) {
             throw Base::ValueError("Wires are not coplanar");
         }
@@ -110,7 +110,7 @@ void FaceMakerBullseye::Build_Essence()
         if (w.isNull()) {
             continue;
         }
-        BRepBndLib::AddOptimal(w.getShape(), box, Standard_False);
+        BRepBndLib::AddOptimal(w.getShape(), box, false);
         if (box.IsVoid()) {
             continue;
         }
@@ -339,7 +339,7 @@ void FaceMakerBullseye::FaceDriller::addHole(const WireInfo& wireInfo, std::vect
 int FaceMakerBullseye::FaceDriller::getWireDirection(const gp_Pln& plane, const TopoDS_Wire& wire)
 {
     // make a test face
-    BRepBuilderAPI_MakeFace mkFace(wire, /*onlyplane=*/Standard_True);
+    BRepBuilderAPI_MakeFace mkFace(wire, /*onlyplane=*/true);
     TopoDS_Face tmpFace = mkFace.Face();
     if (tmpFace.IsNull()) {
         throw Standard_Failure("getWireDirection: Failed to create face from wire");
@@ -351,7 +351,7 @@ int FaceMakerBullseye::FaceDriller::getWireDirection(const gp_Pln& plane, const 
 
     // unlikely, but just in case OCC decided to reverse our wire for the face...  take that into
     // account!
-    TopoDS_Iterator it(tmpFace, /*CumOri=*/Standard_False);
+    TopoDS_Iterator it(tmpFace, /*CumOri=*/false);
     normal_co ^= it.Value().Orientation() != wire.Orientation();
 
     return normal_co ? 1 : -1;

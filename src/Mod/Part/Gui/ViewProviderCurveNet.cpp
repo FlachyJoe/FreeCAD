@@ -250,7 +250,7 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent* const ev, Gui::View3DInven
     return false;
 }
 
-Standard_Boolean ViewProviderCurveNet::computeEdges(SoSeparator* root, const TopoDS_Shape& myShape)
+bool ViewProviderCurveNet::computeEdges(SoSeparator* root, const TopoDS_Shape& myShape)
 {
     unsigned long ulNbOfPoints = 50;
 
@@ -265,7 +265,7 @@ Standard_Boolean ViewProviderCurveNet::computeEdges(SoSeparator* root, const Top
         // get the shape and mesh it
         const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
 
-        Standard_Real fBegin, fEnd;
+        double fBegin, fEnd;
         SbVec3f* vertices = new SbVec3f[ulNbOfPoints];
 
         Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge, fBegin, fEnd);
@@ -293,7 +293,7 @@ Standard_Boolean ViewProviderCurveNet::computeEdges(SoSeparator* root, const Top
     return true;
 }
 
-Standard_Boolean ViewProviderCurveNet::computeVertices(SoSeparator* root, const TopoDS_Shape& myShape)
+bool ViewProviderCurveNet::computeVertices(SoSeparator* root, const TopoDS_Shape& myShape)
 {
     TopExp_Explorer ex;
     SoSeparator* VertexRoot = new SoSeparator();

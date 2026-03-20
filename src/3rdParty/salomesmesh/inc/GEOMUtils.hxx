@@ -47,7 +47,7 @@
 
 class Bnd_Box;
 
-inline Standard_Boolean IsEqual (const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+inline bool IsEqual (const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   return S1.IsSame(S2);
 }
@@ -95,12 +95,12 @@ namespace GEOMUtils
    * \brief Get vector, defined by the given edge.
    * \param theShape The edge.
    * \param doConsiderOrientation If True, take into account the edge orientation.
-   * \note It is recommended to use doConsiderOrientation=Standard_False, because
+   * \note It is recommended to use doConsiderOrientation=false, because
    *       the same edge can have different orientation depending on the way it was
    *       extracted from a shape.
    */
   Standard_EXPORT gp_Vec GetVector (const TopoDS_Shape& theShape,
-				    Standard_Boolean doConsiderOrientation);
+				    bool doConsiderOrientation);
 
   /*!
    * \brief Sort shapes in the list by their coordinates.
@@ -125,7 +125,7 @@ namespace GEOMUtils
    * \brief Sort shapes by their centers of mass, using formula X*999 + Y*99 + Z*0.9
    */
   Standard_EXPORT void SortShapes (TopTools_ListOfShape& SL,
-				   const Standard_Boolean isOldSorting = Standard_True);
+				   const bool isOldSorting = true);
 
   /*!
    * \brief Convert TopoDS_COMPSOLID to TopoDS_COMPOUND.
@@ -177,9 +177,9 @@ namespace GEOMUtils
    *
    * \param theShape the shape.
    * \param theBox rough bounding box on input; precise bounding box on output.
-   * \retval Standard_True in case of success; Standard_False otherwise.
+   * \retval true in case of success; false otherwise.
    */
-  Standard_EXPORT Standard_Boolean PreciseBoundingBox(const TopoDS_Shape &theShape, Bnd_Box &theBox);
+  Standard_EXPORT bool PreciseBoundingBox(const TopoDS_Shape &theShape, Bnd_Box &theBox);
 
   /*!
    * \brief Computes minumal distance between two shapes for singular cases
@@ -191,7 +191,7 @@ namespace GEOMUtils
    * \param Ptmp2 the output result point on the second shape
    * \retval negative value if it is not a singular case; actual distance for singular case.
    */
-  Standard_EXPORT Standard_Real GetMinDistanceSingular(const TopoDS_Shape& aSh1,
+  Standard_EXPORT double GetMinDistanceSingular(const TopoDS_Shape& aSh1,
 						       const TopoDS_Shape& aSh2,
 						       gp_Pnt& Ptmp1, gp_Pnt& Ptmp2);
   
@@ -204,7 +204,7 @@ namespace GEOMUtils
    * \param thePnt2 the output result point on the second shape
    * \retval negative value in case of failure; otherwise the real distance.
    */
-  Standard_EXPORT Standard_Real GetMinDistance(const TopoDS_Shape& theShape1,
+  Standard_EXPORT double GetMinDistance(const TopoDS_Shape& theShape1,
 					       const TopoDS_Shape& theShape2,
 					       gp_Pnt& thePnt1, gp_Pnt& thePnt2);
   
@@ -263,7 +263,7 @@ namespace GEOMUtils
    */
   Standard_EXPORT bool FixShapeTolerance( TopoDS_Shape& shape,
                                           TopAbs_ShapeEnum type,
-                                          Standard_Real tolerance = Precision::Confusion(),
+                                          double tolerance = Precision::Confusion(),
                                           bool checkGeometry = false );
 
   /*!
@@ -271,7 +271,7 @@ namespace GEOMUtils
    * This is overloaded function, it behaves exactly as previous one
    */
   Standard_EXPORT bool FixShapeTolerance( TopoDS_Shape& shape,
-                                          Standard_Real tolerance = Precision::Confusion(),
+                                          double tolerance = Precision::Confusion(),
                                           bool checkGeometry = false );
 
   /*!

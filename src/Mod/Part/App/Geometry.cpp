@@ -100,8 +100,8 @@
 #include <Precision.hxx>
 #include <ShapeConstruct_Curve.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Version.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -723,7 +723,7 @@ TopoDS_Shape GeomCurve::toShape() const
 // Function : IsLinear
 // purpose : Returns TRUE if theC is line-like.
 //=======================================================================
-static Standard_Boolean IsLinear(const Adaptor3d_Curve& theC)
+static bool IsLinear(const Adaptor3d_Curve& theC)
 {
     const GeomAbs_CurveType aCT = theC.GetType();
     if (aCT == GeomAbs_OffsetCurve) {
@@ -739,10 +739,10 @@ static Standard_Boolean IsLinear(const Adaptor3d_Curve& theC)
     }
 
     if (aCT == GeomAbs_Line) {
-        return Standard_True;
+        return true;
     }
 
-    return Standard_False;
+    return false;
 }
 
 bool GeomCurve::isLinear(Base::Vector3d* dir, Base::Vector3d* base) const
@@ -1256,7 +1256,7 @@ std::vector<Base::Vector3d> GeomBezierCurve::getPoles() const
     TColgp_Array1OfPnt poleArray(1, myCurve->NbPoles());
     myCurve->Poles(poleArray);
 
-    for (Standard_Integer index = poleArray.Lower(); index <= poleArray.Upper(); index++) {
+    for (int index = poleArray.Lower(); index <= poleArray.Upper(); index++) {
         const gp_Pnt& pnt = poleArray(index);
         poles.emplace_back(pnt.X(), pnt.Y(), pnt.Z());
     }
@@ -1270,8 +1270,8 @@ std::vector<double> GeomBezierCurve::getWeights() const
     TColStd_Array1OfReal weightArray(1, myCurve->NbPoles());
     myCurve->Weights(weightArray);
 
-    for (Standard_Integer index = weightArray.Lower(); index <= weightArray.Upper(); index++) {
-        const Standard_Real& real = weightArray(index);
+    for (int index = weightArray.Lower(); index <= weightArray.Upper(); index++) {
+        const double& real = weightArray(index);
         weights.push_back(real);
     }
     return weights;
@@ -1363,13 +1363,13 @@ bool GeomBezierCurve::isSame(const Geometry& _other, double tol, double) const
 
     auto& other = dynamic_cast<const GeomBezierCurve&>(_other);
 
-    Standard_Integer c = myCurve->NbPoles();
+    int c = myCurve->NbPoles();
     if (c != other.myCurve->NbPoles()) {
         return false;
     }
 
     double tol2 = tol * tol;
-    for (Standard_Integer index = 1; index <= c; ++index) {
+    for (int index = 1; index <= c; ++index) {
         if (myCurve->Pole(index).SquareDistance(other.myCurve->Pole(index)) > tol2
             || fabs(myCurve->Weight(index) - other.myCurve->Weight(index)) > tol) {
             return false;
@@ -1437,15 +1437,8 @@ GeomBSplineCurve::GeomBSplineCurve(
         m.SetValue(index, multiplicities[index - 1]);
     }
 
-    this->myCurve = new Geom_BSplineCurve(
-        p,
-        w,
-        k,
-        m,
-        degree,
-        periodic ? Standard_True : Standard_False,
-        checkrational ? Standard_True : Standard_False
-    );
+    this->myCurve
+        = new Geom_BSplineCurve(p, w, k, m, degree, periodic ? true : false, checkrational ? true : false);
 }
 
 
@@ -1545,7 +1538,7 @@ void GeomBSplineCurve::setPoles(
 
     workAroundOCCTBug(weights);
 
-    Standard_Integer index = 1;
+    int index = 1;
 
     for (std::size_t i = 0; i < poles.size(); i++, index++) {
         setPole(index, poles[i], weights[i]);
@@ -1554,7 +1547,7 @@ void GeomBSplineCurve::setPoles(
 
 void GeomBSplineCurve::setPoles(const std::vector<Base::Vector3d>& poles)
 {
-    Standard_Integer index = 1;
+    int index = 1;
 
     for (auto it = poles.begin(); it != poles.end(); ++it, index++) {
         setPole(index, *it);
@@ -1568,7 +1561,7 @@ std::vector<Base::Vector3d> GeomBSplineCurve::getPoles() const
     TColgp_Array1OfPnt p(1, myCurve->NbPoles());
     myCurve->Poles(p);
 
-    for (Standard_Integer i = p.Lower(); i <= p.Upper(); i++) {
+    for (int i = p.Lower(); i <= p.Upper(); i++) {
         const gp_Pnt& pnt = p(i);
         poles.emplace_back(pnt.X(), pnt.Y(), pnt.Z());
     }
@@ -1582,8 +1575,8 @@ std::vector<double> GeomBSplineCurve::getWeights() const
     TColStd_Array1OfReal w(1, myCurve->NbPoles());
     myCurve->Weights(w);
 
-    for (Standard_Integer i = w.Lower(); i <= w.Upper(); i++) {
-        const Standard_Real& real = w(i);
+    for (int i = w.Lower(); i <= w.Upper(); i++) {
+        const double& real = w(i);
         weights.push_back(real);
     }
     return weights;
@@ -1594,7 +1587,7 @@ void GeomBSplineCurve::setWeights(const std::vector<double>& weights)
     workAroundOCCTBug(weights);
 
     try {
-        Standard_Integer index = 1;
+        int index = 1;
 
         for (auto it = weights.begin(); it != weights.end(); ++it, index++) {
             myCurve->SetWeight(index, *it);
@@ -1624,7 +1617,7 @@ void GeomBSplineCurve::setKnot(int index, const double val, int mult)
 
 void GeomBSplineCurve::setKnots(const std::vector<double>& knots)
 {
-    Standard_Integer index = 1;
+    int index = 1;
 
     for (auto it = knots.begin(); it != knots.end(); ++it, index++) {
         setKnot(index, *it);
@@ -1637,7 +1630,7 @@ void GeomBSplineCurve::setKnots(const std::vector<double>& knots, const std::vec
         throw Base::ValueError("knots and multiplicities mismatch");
     }
 
-    Standard_Integer index = 1;
+    int index = 1;
 
     for (std::size_t it = 0; it < knots.size(); it++, index++) {
         setKnot(index, knots[it], multiplicities[it]);
@@ -1651,8 +1644,8 @@ std::vector<double> GeomBSplineCurve::getKnots() const
     TColStd_Array1OfReal k(1, myCurve->NbKnots());
     myCurve->Knots(k);
 
-    for (Standard_Integer i = k.Lower(); i <= k.Upper(); i++) {
-        const Standard_Real& real = k(i);
+    for (int i = k.Lower(); i <= k.Upper(); i++) {
+        const double& real = k(i);
         knots.push_back(real);
     }
     return knots;
@@ -1665,8 +1658,8 @@ std::vector<int> GeomBSplineCurve::getMultiplicities() const
     TColStd_Array1OfInteger m(1, myCurve->NbKnots());
     myCurve->Multiplicities(m);
 
-    for (Standard_Integer i = m.Lower(); i <= m.Upper(); i++) {
-        const Standard_Integer& nm = m(i);
+    for (int i = m.Lower(); i <= m.Upper(); i++) {
+        const int& nm = m(i);
         mults.push_back(nm);
     }
     return mults;
@@ -1690,7 +1683,7 @@ int GeomBSplineCurve::getDegree() const
 
 bool GeomBSplineCurve::isPeriodic() const
 {
-    return myCurve->IsPeriodic() == Standard_True;
+    return myCurve->IsPeriodic() == true;
 }
 
 void GeomBSplineCurve::setPeriodic() const
@@ -1700,7 +1693,7 @@ void GeomBSplineCurve::setPeriodic() const
 
 bool GeomBSplineCurve::isRational() const
 {
-    return myCurve->IsRational() == Standard_True;
+    return myCurve->IsRational() == true;
 }
 
 bool GeomBSplineCurve::join(const Handle(Geom_BoundedCurve) & other)
@@ -1715,17 +1708,17 @@ bool GeomBSplineCurve::join(const Handle(Geom_BoundedCurve) & other)
 
 std::tuple<GeomBSplineCurvePtr, GeomBSplineCurvePtr> GeomBSplineCurve::split(double u, double tol) const
 {
-    Handle(Geom_BSplineCurve)
-        curveL = GeomConvert::SplitBSplineCurve(myCurve, myCurve->FirstParameter(), u, tol, true);
-    Handle(Geom_BSplineCurve)
-        curveR = GeomConvert::SplitBSplineCurve(myCurve, u, myCurve->LastParameter(), tol, true);
+    Handle(Geom_BSplineCurve) curveL
+        = GeomConvert::SplitBSplineCurve(myCurve, myCurve->FirstParameter(), u, tol, true);
+    Handle(Geom_BSplineCurve) curveR
+        = GeomConvert::SplitBSplineCurve(myCurve, u, myCurve->LastParameter(), tol, true);
     return std::make_tuple(
         std::make_shared<GeomBSplineCurve>(curveL),
         std::make_shared<GeomBSplineCurve>(curveR)
     );
 }
 
-void GeomBSplineCurve::interpolate(const std::vector<gp_Pnt>& p, Standard_Boolean periodic)
+void GeomBSplineCurve::interpolate(const std::vector<gp_Pnt>& p, bool periodic)
 {
     if (p.size() < 2) {
         throw Standard_ConstructionError();
@@ -1761,10 +1754,10 @@ void GeomBSplineCurve::interpolate(const std::vector<gp_Pnt>& p, const std::vect
     Handle(TColStd_HArray1OfBoolean) fgs = new TColStd_HArray1OfBoolean(1, t.size());
     for (std::size_t i = 0; i < p.size(); i++) {
         tgs.SetValue(i + 1, t[i]);
-        fgs->SetValue(i + 1, Standard_True);
+        fgs->SetValue(i + 1, true);
     }
 
-    GeomAPI_Interpolate interpolate(pts, Standard_False, tol3d);
+    GeomAPI_Interpolate interpolate(pts, false, tol3d);
     interpolate.Load(tgs, fgs);
     interpolate.Perform();
     this->myCurve = interpolate.Curve();
@@ -1889,7 +1882,7 @@ void GeomBSplineCurve::approximate(
 {
     try {
         TColgp_Array1OfPnt coords(1, static_cast<int>(pnts.size()));
-        Standard_Integer index = 1;
+        int index = 1;
         for (const auto& it : pnts) {
             coords(index++) = gp_Pnt(it.x, it.y, it.z);
         }
@@ -1919,7 +1912,7 @@ void GeomBSplineCurve::approximate(
 {
     try {
         TColgp_Array1OfPnt coords(1, static_cast<int>(pnts.size()));
-        Standard_Integer index = 1;
+        int index = 1;
         for (const auto& it : pnts) {
             coords(index++) = gp_Pnt(it.x, it.y, it.z);
         }
@@ -1961,7 +1954,7 @@ void GeomBSplineCurve::approximate(
 {
     try {
         TColgp_Array1OfPnt coords(1, static_cast<int>(pnts.size()));
-        Standard_Integer index = 1;
+        int index = 1;
         for (const auto& it : pnts) {
             coords(index++) = gp_Pnt(it.x, it.y, it.z);
         }
@@ -2013,7 +2006,7 @@ bool GeomBSplineCurve::removeKnot(int index, int multiplicity, double tolerance)
             // successful
             TColStd_Array1OfReal weights(1, curve->NbPoles());
             curve->Weights(weights);
-            for (Standard_Integer i = weights.Lower(); i <= weights.Upper(); i++) {
+            for (int i = weights.Lower(); i <= weights.Upper(); i++) {
                 double v = weights(i);
                 if (v <= gp::Resolution()) {
                     return false;
@@ -2153,7 +2146,7 @@ void GeomBSplineCurve::Restore(Base::XMLReader& reader)
     for (int i = 1; i <= knotscount; i++) {
         reader.readElement("Knot");
         double val = reader.getAttribute<double>("Value");
-        Standard_Integer mult = reader.getAttribute<long>("Mult");
+        int mult = reader.getAttribute<long>("Mult");
         k.SetValue(i, val);
         m.SetValue(i, mult);
     }
@@ -2162,15 +2155,8 @@ void GeomBSplineCurve::Restore(Base::XMLReader& reader)
     // Geom_BSplineCurve(occpoles,occweights,occknots,occmults,degree,periodic,CheckRational
 
     try {
-        Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(
-            p,
-            w,
-            k,
-            m,
-            degree,
-            isperiodic ? Standard_True : Standard_False,
-            Standard_False
-        );
+        Handle(Geom_BSplineCurve) spline
+            = new Geom_BSplineCurve(p, w, k, m, degree, isperiodic ? true : false, false);
 
         if (!spline.IsNull()) {
             this->myCurve = spline;
@@ -2383,7 +2369,7 @@ GeomBSplineCurve* GeomConic::toNurbs(double first, double last) const
 
     // pass the trimmed conic
     Handle(Geom_BSplineCurve) bspline = GeomConvert::CurveToBSplineCurve(curve);
-    Standard_Real fnew = bspline->FirstParameter(), lnew = bspline->LastParameter(), UTol;
+    double fnew = bspline->FirstParameter(), lnew = bspline->LastParameter(), UTol;
     if (!bspline->IsPeriodic()) {
         bspline->Resolution(Precision::Confusion(), UTol);
         if (Abs(first - fnew) > UTol || Abs(last - lnew) > UTol) {
@@ -2844,8 +2830,8 @@ GeomBSplineCurve* GeomCircle::toNurbs(double first, double last) const
     knots(2) = std::numbers::pi;
     knots(3) = 2 * std::numbers::pi;
 
-    Handle(Geom_BSplineCurve)
-        spline = new Geom_BSplineCurve(poles, weights, knots, mults, 3, Standard_False, Standard_True);
+    Handle(Geom_BSplineCurve) spline
+        = new Geom_BSplineCurve(poles, weights, knots, mults, 3, false, true);
     return new GeomBSplineCurve(spline);
 }
 
@@ -3187,7 +3173,7 @@ void GeomArcOfCircle::Restore(Base::XMLReader& reader)
         if (!mc.IsDone()) {
             THROWM(Base::CADKernelError, gce_ErrorStatusText(mc.Status()))
         }
-        GC_MakeArcOfCircle ma(mc.Value()->Circ(), StartAngle, EndAngle, Standard_True);
+        GC_MakeArcOfCircle ma(mc.Value()->Circ(), StartAngle, EndAngle, true);
         if (!ma.IsDone()) {
             THROWM(Base::CADKernelError, gce_ErrorStatusText(ma.Status()))
         }
@@ -3260,8 +3246,8 @@ GeomBSplineCurve* GeomEllipse::toNurbs(double first, double last) const
     }
 
     Handle(Geom_Ellipse) conic = Handle(Geom_Ellipse)::DownCast(handle());
-    Standard_Real majorRadius = conic->MajorRadius();
-    Standard_Real minorRadius = conic->MinorRadius();
+    double majorRadius = conic->MajorRadius();
+    double minorRadius = conic->MinorRadius();
 
     TColgp_Array1OfPnt poles(1, 7);
     poles(1) = gp_Pnt(majorRadius, 0, 0);
@@ -3293,8 +3279,8 @@ GeomBSplineCurve* GeomEllipse::toNurbs(double first, double last) const
     knots(2) = 1;
     knots(3) = 2;
 
-    Handle(Geom_BSplineCurve)
-        spline = new Geom_BSplineCurve(poles, weights, knots, mults, 3, Standard_False, Standard_True);
+    Handle(Geom_BSplineCurve) spline
+        = new Geom_BSplineCurve(poles, weights, knots, mults, 3, false, true);
     return new GeomBSplineCurve(spline);
 }
 
@@ -3756,7 +3742,7 @@ void GeomArcOfEllipse::Restore(Base::XMLReader& reader)
             THROWM(Base::CADKernelError, gce_ErrorStatusText(mc.Status()))
         }
 
-        GC_MakeArcOfEllipse ma(mc.Value()->Elips(), StartAngle, EndAngle, Standard_True);
+        GC_MakeArcOfEllipse ma(mc.Value()->Elips(), StartAngle, EndAngle, true);
         if (!ma.IsDone()) {
             THROWM(Base::CADKernelError, gce_ErrorStatusText(ma.Status()))
         }
@@ -4217,16 +4203,16 @@ void GeomArcOfHyperbola::Restore(Base::XMLReader& reader)
             THROWM(Base::CADKernelError, gce_ErrorStatusText(mc.Status()))
         }
 
-        GC_MakeArcOfHyperbola ma(mc.Value()->Hypr(), StartAngle, EndAngle, Standard_True);
+        GC_MakeArcOfHyperbola ma(mc.Value()->Hypr(), StartAngle, EndAngle, true);
         if (!ma.IsDone()) {
             THROWM(Base::CADKernelError, gce_ErrorStatusText(ma.Status()))
         }
 
         Handle(Geom_TrimmedCurve) tmpcurve = ma.Value();
-        Handle(Geom_Hyperbola)
-            tmphyperbola = Handle(Geom_Hyperbola)::DownCast(tmpcurve->BasisCurve());
-        Handle(Geom_Hyperbola)
-            hyperbola = Handle(Geom_Hyperbola)::DownCast(this->myCurve->BasisCurve());
+        Handle(Geom_Hyperbola) tmphyperbola = Handle(Geom_Hyperbola)::DownCast(tmpcurve->BasisCurve());
+        Handle(Geom_Hyperbola) hyperbola = Handle(Geom_Hyperbola)::DownCast(
+            this->myCurve->BasisCurve()
+        );
 
         hyperbola->SetHypr(tmphyperbola->Hypr());
         this->myCurve->SetTrim(tmpcurve->FirstParameter(), tmpcurve->LastParameter());
@@ -4585,7 +4571,7 @@ void GeomArcOfParabola::Restore(Base::XMLReader& reader)
             THROWM(Base::CADKernelError, gce_ErrorStatusText(mc.Status()))
         }
 
-        GC_MakeArcOfParabola ma(mc.Value(), StartAngle, EndAngle, Standard_True);
+        GC_MakeArcOfParabola ma(mc.Value(), StartAngle, EndAngle, true);
         if (!ma.IsDone()) {
             THROWM(Base::CADKernelError, gce_ErrorStatusText(ma.Status()))
         }
@@ -5038,7 +5024,7 @@ std::optional<Base::Rotation> GeomSurface::getRotation() const
 TopoDS_Shape GeomSurface::toShape() const
 {
     Handle(Geom_Surface) s = Handle(Geom_Surface)::DownCast(handle());
-    Standard_Real u1, u2, v1, v2;
+    double u1, u2, v1, v2;
     s->Bounds(u1, u2, v1, v2);
     BRepBuilderAPI_MakeFace mkBuilder(s, u1, u2, v1, v2, Precision::Confusion());
     return mkBuilder.Shape();
@@ -5070,7 +5056,7 @@ bool GeomSurface::tangentV(double u, double v, gp_Dir& dirV) const
 bool GeomSurface::normal(double u, double v, gp_Dir& dir) const
 {
     Handle(Geom_Surface) s = Handle(Geom_Surface)::DownCast(handle());
-    Standard_Boolean done;
+    bool done;
 
     Tools::getNormal(s, u, v, Precision::Confusion(), dir, done);
 
@@ -5189,7 +5175,7 @@ unsigned int GeomBezierSurface::getMemSize() const
         unsigned int poles = mySurface->NbUPoles();
         poles *= mySurface->NbVPoles();
         size += poles * sizeof(gp_Pnt);
-        size += poles * sizeof(Standard_Real);
+        size += poles * sizeof(double);
     }
     return size;
 }
@@ -5216,8 +5202,8 @@ bool GeomBezierSurface::isSame(const Geometry& _other, double tol, double atol) 
     }
 
     auto& other = static_cast<const GeomBezierSurface&>(_other);
-    Standard_Integer uc = mySurface->NbUPoles();
-    Standard_Integer vc = mySurface->NbVPoles();
+    int uc = mySurface->NbUPoles();
+    int vc = mySurface->NbVPoles();
     if (uc != other.mySurface->NbUPoles() || vc != other.mySurface->NbVPoles()
         || mySurface->UDegree() != other.mySurface->UDegree()
         || mySurface->VDegree() != other.mySurface->VDegree()) {
@@ -5226,8 +5212,8 @@ bool GeomBezierSurface::isSame(const Geometry& _other, double tol, double atol) 
 
     (void)atol;
     double tol2 = tol * tol;
-    for (Standard_Integer u = 1; u <= uc; ++u) {
-        for (Standard_Integer v = 1; v <= vc; ++v) {
+    for (int u = 1; u <= uc; ++u) {
+        for (int v = 1; v <= vc; ++v) {
             if (mySurface->Pole(u, v).SquareDistance(other.mySurface->Pole(u, v)) > tol2
                 || fabs(mySurface->Weight(u, v) - other.mySurface->Weight(u, v)) > tol) {
                 return false;
@@ -5289,7 +5275,7 @@ void GeomBSplineSurface::scaleKnotsToBounds(double u0, double u1, double v0, dou
     try {
         Handle(Geom_BSplineSurface) surf = Handle(Geom_BSplineSurface)::DownCast(mySurface->Copy());
         Standard_RangeError_Raise_if(u1 <= u0 || v1 <= v0, " ");
-        Standard_Real bu0, bu1, bv0, bv1;
+        double bu0, bu1, bv0, bv1;
         surf->Bounds(bu0, bu1, bv0, bv1);
         if ((abs(u0 - bu0) > Precision::Confusion()) || (abs(u1 - bu1) > Precision::Confusion())) {
             TColStd_Array1OfReal uk(1, surf->NbUKnots());
@@ -5316,14 +5302,14 @@ unsigned int GeomBSplineSurface::getMemSize() const
 {
     unsigned int size = sizeof(Geom_BSplineSurface);
     if (!mySurface.IsNull()) {
-        size += mySurface->NbUKnots() * sizeof(Standard_Real);
-        size += mySurface->NbUKnots() * sizeof(Standard_Integer);
-        size += mySurface->NbVKnots() * sizeof(Standard_Real);
-        size += mySurface->NbVKnots() * sizeof(Standard_Integer);
+        size += mySurface->NbUKnots() * sizeof(double);
+        size += mySurface->NbUKnots() * sizeof(int);
+        size += mySurface->NbVKnots() * sizeof(double);
+        size += mySurface->NbVKnots() * sizeof(int);
         unsigned int poles = mySurface->NbUPoles();
         poles *= mySurface->NbVPoles();
         size += poles * sizeof(gp_Pnt);
-        size += poles * sizeof(Standard_Real);
+        size += poles * sizeof(double);
     }
     return size;
 }
@@ -5356,10 +5342,10 @@ bool GeomBSplineSurface::isSame(const Geometry& _other, double tol, double atol)
     }
 
     auto& other = static_cast<const GeomBSplineSurface&>(_other);
-    Standard_Integer uc = mySurface->NbUPoles();
-    Standard_Integer vc = mySurface->NbVPoles();
-    Standard_Integer ukc = mySurface->NbUKnots();
-    Standard_Integer vkc = mySurface->NbVKnots();
+    int uc = mySurface->NbUPoles();
+    int vc = mySurface->NbVPoles();
+    int ukc = mySurface->NbUKnots();
+    int vkc = mySurface->NbVKnots();
     if (uc != other.mySurface->NbUPoles() || vc != other.mySurface->NbVPoles()
         || ukc != other.mySurface->NbUKnots() || vkc != other.mySurface->NbVKnots()
         || mySurface->UDegree() != other.mySurface->UDegree()
@@ -5371,21 +5357,21 @@ bool GeomBSplineSurface::isSame(const Geometry& _other, double tol, double atol)
 
     (void)atol;
     double tol2 = tol * tol;
-    for (Standard_Integer u = 1; u <= uc; ++u) {
-        for (Standard_Integer v = 1; v <= vc; ++v) {
+    for (int u = 1; u <= uc; ++u) {
+        for (int v = 1; v <= vc; ++v) {
             if (mySurface->Pole(u, v).SquareDistance(other.mySurface->Pole(u, v)) > tol2
                 || fabs(mySurface->Weight(u, v) - other.mySurface->Weight(u, v)) > tol) {
                 return false;
             }
         }
     }
-    for (Standard_Integer u = 1; u <= ukc; ++u) {
+    for (int u = 1; u <= ukc; ++u) {
         if (fabs(mySurface->UKnot(u) - other.mySurface->UKnot(u)) > tol
             || fabs(mySurface->UMultiplicity(u) - other.mySurface->UMultiplicity(u)) > tol) {
             return false;
         }
     }
-    for (Standard_Integer v = 1; v <= ukc; ++v) {
+    for (int v = 1; v <= ukc; ++v) {
         if (fabs(mySurface->VKnot(v) - other.mySurface->VKnot(v)) > tol
             || fabs(mySurface->VMultiplicity(v) - other.mySurface->VMultiplicity(v)) > tol) {
             return false;
@@ -5602,16 +5588,16 @@ gp_Vec GeomCone::getDN(double u, double v, int Nu, int Nv) const
     return GeomSurface::getDN(u, v, Nu, Nv);
 #else
     // Copied from ElSLib::ConeDN() and applied the needed fix
-    auto ElSLib__ConeDN = [](const Standard_Real U,
-                             const Standard_Real V,
+    auto ElSLib__ConeDN = [](const double U,
+                             const double V,
                              const gp_Ax3& Pos,
-                             const Standard_Real Radius,
-                             const Standard_Real SAngle,
-                             const Standard_Integer Nu,
-                             const Standard_Integer Nv) {
+                             const double Radius,
+                             const double SAngle,
+                             const int Nu,
+                             const int Nv) {
         gp_XYZ Xdir = Pos.XDirection().XYZ();
         gp_XYZ Ydir = Pos.YDirection().XYZ();
-        Standard_Real Um = U + Nu * std::numbers::pi / 2;
+        double Um = U + Nu * std::numbers::pi / 2;
         Xdir.Multiply(cos(Um));
         Ydir.Multiply(sin(Um));
         Xdir.Add(Ydir);
@@ -6115,7 +6101,7 @@ bool GeomTrimmedSurface::isSame(const Geometry& _other, double tol, double atol)
 
     auto& other = static_cast<const GeomTrimmedSurface&>(_other);
 
-    Standard_Real u1[2], u2[2], v1[2], v2[2];
+    double u1[2], u2[2], v1[2], v2[2];
     mySurface->Bounds(u1[0], u2[0], v1[0], v2[0]);
     other.mySurface->Bounds(u1[1], u2[1], v1[1], v2[1]);
 
@@ -6992,8 +6978,9 @@ std::unique_ptr<GeomSurface> makeFromSurface(const Handle(Geom_Surface) & s, boo
         geoSurf = std::make_unique<GeomPlateSurface>(hSurf);
     }
     else if (s->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
-        Handle(Geom_RectangularTrimmedSurface)
-            hSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(s);
+        Handle(Geom_RectangularTrimmedSurface) hSurf = Handle(
+            Geom_RectangularTrimmedSurface
+        )::DownCast(s);
         geoSurf = std::make_unique<GeomTrimmedSurface>(hSurf);
     }
     else if (s->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
@@ -7001,8 +6988,9 @@ std::unique_ptr<GeomSurface> makeFromSurface(const Handle(Geom_Surface) & s, boo
         geoSurf = std::make_unique<GeomSurfaceOfRevolution>(hSurf);
     }
     else if (s->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))) {
-        Handle(Geom_SurfaceOfLinearExtrusion)
-            hSurf = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(s);
+        Handle(Geom_SurfaceOfLinearExtrusion) hSurf = Handle(
+            Geom_SurfaceOfLinearExtrusion
+        )::DownCast(s);
         geoSurf = std::make_unique<GeomSurfaceOfExtrusion>(hSurf);
     }
     else {
@@ -7027,29 +7015,33 @@ std::unique_ptr<GeomSurface> makeFromSurfaceAdaptor(const BRepAdaptor_Surface& a
         }
         case GeomAbs_Cylinder: {
             geoSurf.reset(new GeomCylinder());
-            Handle(Geom_CylindricalSurface)
-                this_surf = Handle(Geom_CylindricalSurface)::DownCast(geoSurf->handle());
+            Handle(Geom_CylindricalSurface) this_surf = Handle(Geom_CylindricalSurface)::DownCast(
+                geoSurf->handle()
+            );
             this_surf->SetCylinder(adapt.Cylinder());
             break;
         }
         case GeomAbs_Cone: {
             geoSurf.reset(new GeomCone());
-            Handle(Geom_ConicalSurface)
-                this_surf = Handle(Geom_ConicalSurface)::DownCast(geoSurf->handle());
+            Handle(Geom_ConicalSurface) this_surf = Handle(Geom_ConicalSurface)::DownCast(
+                geoSurf->handle()
+            );
             this_surf->SetCone(adapt.Cone());
             break;
         }
         case GeomAbs_Sphere: {
             geoSurf.reset(new GeomSphere());
-            Handle(Geom_SphericalSurface)
-                this_surf = Handle(Geom_SphericalSurface)::DownCast(geoSurf->handle());
+            Handle(Geom_SphericalSurface) this_surf = Handle(Geom_SphericalSurface)::DownCast(
+                geoSurf->handle()
+            );
             this_surf->SetSphere(adapt.Sphere());
             break;
         }
         case GeomAbs_Torus: {
             geoSurf.reset(new GeomToroid());
-            Handle(Geom_ToroidalSurface)
-                this_surf = Handle(Geom_ToroidalSurface)::DownCast(geoSurf->handle());
+            Handle(Geom_ToroidalSurface) this_surf = Handle(Geom_ToroidalSurface)::DownCast(
+                geoSurf->handle()
+            );
             this_surf->SetTorus(adapt.Torus());
             break;
         }
@@ -7065,8 +7057,9 @@ std::unique_ptr<GeomSurface> makeFromSurfaceAdaptor(const BRepAdaptor_Surface& a
             Handle(Geom_Surface) s = BRep_Tool::Surface(adapt.Face());
             Handle(Geom_SurfaceOfRevolution) rev = Handle(Geom_SurfaceOfRevolution)::DownCast(s);
             if (rev.IsNull()) {
-                Handle(Geom_RectangularTrimmedSurface)
-                    rect = Handle(Geom_RectangularTrimmedSurface)::DownCast(s);
+                Handle(Geom_RectangularTrimmedSurface) rect = Handle(
+                    Geom_RectangularTrimmedSurface
+                )::DownCast(s);
                 rev = Handle(Geom_SurfaceOfRevolution)::DownCast(rect->BasisSurface());
             }
             if (!rev.IsNull()) {
@@ -7076,11 +7069,13 @@ std::unique_ptr<GeomSurface> makeFromSurfaceAdaptor(const BRepAdaptor_Surface& a
         }
         case GeomAbs_SurfaceOfExtrusion: {
             Handle(Geom_Surface) s = BRep_Tool::Surface(adapt.Face());
-            Handle(Geom_SurfaceOfLinearExtrusion)
-                ext = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(s);
+            Handle(Geom_SurfaceOfLinearExtrusion) ext = Handle(
+                Geom_SurfaceOfLinearExtrusion
+            )::DownCast(s);
             if (ext.IsNull()) {
-                Handle(Geom_RectangularTrimmedSurface)
-                    rect = Handle(Geom_RectangularTrimmedSurface)::DownCast(s);
+                Handle(Geom_RectangularTrimmedSurface) rect = Handle(
+                    Geom_RectangularTrimmedSurface
+                )::DownCast(s);
                 ext = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(rect->BasisSurface());
             }
             if (!ext.IsNull()) {
@@ -7092,8 +7087,9 @@ std::unique_ptr<GeomSurface> makeFromSurfaceAdaptor(const BRepAdaptor_Surface& a
             Handle(Geom_Surface) s = BRep_Tool::Surface(adapt.Face());
             Handle(Geom_OffsetSurface) off = Handle(Geom_OffsetSurface)::DownCast(s);
             if (off.IsNull()) {
-                Handle(Geom_RectangularTrimmedSurface)
-                    rect = Handle(Geom_RectangularTrimmedSurface)::DownCast(s);
+                Handle(Geom_RectangularTrimmedSurface) rect = Handle(
+                    Geom_RectangularTrimmedSurface
+                )::DownCast(s);
                 off = Handle(Geom_OffsetSurface)::DownCast(rect->BasisSurface());
             }
             if (!off.IsNull()) {
@@ -7505,7 +7501,7 @@ void transformAndConvertToGeometry(
         return;
     }
 
-    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+    double xmin, ymin, zmin, xmax, ymax, zmax;
     bndBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
     double baseWidth = xmax - xmin;
     double baseHeight = ymax - ymin;
@@ -7552,7 +7548,7 @@ void transformAndConvertToGeometry(
 
         for (TopExp_Explorer explorer(performer.Shape(), TopAbs_EDGE); explorer.More();
              explorer.Next()) {
-            Standard_Real first, last;
+            double first, last;
             const TopoDS_Edge& edge = TopoDS::Edge(explorer.Current());
             Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, first, last);
             if (curve.IsNull()) {
@@ -7571,8 +7567,8 @@ void transformAndConvertToGeometry(
                 }
 
                 if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve))) {
-                    Handle(Geom_TrimmedCurve)
-                        tcurve = new Geom_TrimmedCurve(curve, first, last, true, false);
+                    Handle(Geom_TrimmedCurve) tcurve
+                        = new Geom_TrimmedCurve(curve, first, last, true, false);
                     Part::GeomTrimmedCurve geomcurve(tcurve);
                     newGeo.reset(geomcurve.toBSpline(first, last));
                 }

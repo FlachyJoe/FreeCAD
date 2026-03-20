@@ -1381,11 +1381,11 @@ void checkForParallelOrCoplanar(
                 if (pln.Axis().IsParallel(plnOther.Axis(), Precision::Angular())) {
                     if (coplanarFace < 0) {
                         gp_Vec vec(pln.Axis().Location(), plnOther.Axis().Location());
-                        Standard_Real D1 = gp_Vec(pln.Axis().Direction()).Dot(vec);
+                        double D1 = gp_Vec(pln.Axis().Direction()).Dot(vec);
                         if (D1 < 0) {
                             D1 = -D1;
                         }
-                        Standard_Real D2 = gp_Vec(plnOther.Axis().Direction()).Dot(vec);
+                        double D2 = gp_Vec(plnOther.Axis().Direction()).Dot(vec);
                         if (D2 < 0) {
                             D2 = -D2;
                         }
@@ -2176,9 +2176,9 @@ TopoShape& TopoShape::makeElementEvolve(
             TopoDS::Face(spineShape),
             TopoDS::Wire(profileShape),
             joinType,
-            axeProf == CoordinateSystem::global ? Standard_True : Standard_False,
-            solid == MakeSolid::makeSolid ? Standard_True : Standard_False,
-            profOnSpine == Spine::on ? Standard_True : Standard_False,
+            axeProf == CoordinateSystem::global ? true : false,
+            solid == MakeSolid::makeSolid ? true : false,
+            profOnSpine == Spine::on ? true : false,
             tol
         );
         return makeElementShape(maker, {spine, profile}, op);
@@ -2188,9 +2188,9 @@ TopoShape& TopoShape::makeElementEvolve(
             TopoDS::Wire(spineShape),
             TopoDS::Wire(profileShape),
             joinType,
-            axeProf == CoordinateSystem::global ? Standard_True : Standard_False,
-            solid == MakeSolid::makeSolid ? Standard_True : Standard_False,
-            profOnSpine == Spine::on ? Standard_True : Standard_False,
+            axeProf == CoordinateSystem::global ? true : false,
+            solid == MakeSolid::makeSolid ? true : false,
+            profOnSpine == Spine::on ? true : false,
             tol
         );
         return makeElementShape(maker, {spine, profile}, op);
@@ -2408,7 +2408,7 @@ static std::vector<TopoShape> prepareProfiles(const std::vector<TopoShape>& shap
 TopoShape& TopoShape::makeElementPipeShell(
     const std::vector<TopoShape>& shapes,
     const MakeSolid make_solid,
-    const Standard_Boolean isFrenet,
+    const bool isFrenet,
     TransitionMode transition,
     const char* op,
     double tol3d,
@@ -2504,8 +2504,8 @@ TopoShape& TopoShape::makeElementOffset(
         offset,
         tol,
         BRepOffset_Mode(offsetMode),
-        intersection ? Standard_True : Standard_False,
-        selfInter ? Standard_True : Standard_False,
+        intersection ? true : false,
+        selfInter ? true : false,
         GeomAbs_JoinType(join)
     );
 
@@ -3095,8 +3095,8 @@ TopoShape& TopoShape::makeElementThickSolid(
         offset,
         tol,
         BRepOffset_Mode(offsetMode),
-        intersection ? Standard_True : Standard_False,
-        selfInter ? Standard_True : Standard_False,
+        intersection ? true : false,
+        selfInter ? true : false,
         GeomAbs_JoinType(join)
     );
     return makeElementShape(mkThick, shape, op);
@@ -3144,7 +3144,7 @@ TopoShape& TopoShape::makeElementWires(
         if (hEdges->Length() == 0) {
             FC_THROWM(NullShapeException, "Null shape");
         }
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(hEdges, tol, Standard_True, hWires);
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(hEdges, tol, true, hWires);
         if (hWires->Length() == 0) {
             FC_THROWM(NullShapeException, "Null shape");
         }
@@ -3251,8 +3251,8 @@ struct EdgePoints
 
 TopoShape TopoShape::reverseEdge(const TopoShape& edge)
 {
-    Standard_Real first = NAN;
-    Standard_Real last = NAN;
+    double first = NAN;
+    double last = NAN;
     const Handle(Geom_Curve) & curve = BRep_Tool::Curve(TopoDS::Edge(edge.getShape()), first, last);
     first = curve->ReversedParameter(first);
     last = curve->ReversedParameter(last);
@@ -3453,7 +3453,7 @@ TopoShape& TopoShape::makeElementTransform(
             FC_THROWM(NullShapeException, "Null input shape");
         }
 
-        BRepBuilderAPI_Transform mkTrf(shape.getShape(), trsf, Standard_True);
+        BRepBuilderAPI_Transform mkTrf(shape.getShape(), trsf, true);
         // TODO: calling Moved() is to make sure the shape has some Location,
         // which is necessary for STEP export to work. However, if we reach
         // here, it probably means BRepBuilderAPI_Transform has modified
@@ -3876,7 +3876,7 @@ TopoShape& TopoShape::makeElementFilledFace(
             TopoDS::Edge(e.getShape()),
             getSupport(e.getShape()),
             getOrder(e.getShape()),
-            /*IsBound*/ Standard_True
+            /*IsBound*/ true
         );
     }
 
@@ -3891,7 +3891,7 @@ TopoShape& TopoShape::makeElementFilledFace(
                     TopoDS::Edge(e),
                     getSupport(e),
                     getOrder(e),
-                    /*IsBound*/ Standard_False
+                    /*IsBound*/ false
                 );
             }
         }
@@ -3900,7 +3900,7 @@ TopoShape& TopoShape::makeElementFilledFace(
                 TopoDS::Edge(sh),
                 getSupport(sh),
                 getOrder(sh),
-                /*IsBound*/ Standard_False
+                /*IsBound*/ false
             );
         }
         else if (sh.ShapeType() == TopAbs_FACE) {
@@ -4208,7 +4208,7 @@ TopoShape& TopoShape::makeElementGeneralFuse(
     else if (tol < 0.0) {
         FCBRepAlgoAPIHelper::setAutoFuzzy(&mkGFA);
     }
-    mkGFA.SetNonDestructive(Standard_True);
+    mkGFA.SetNonDestructive(true);
 #if OCC_VERSION_HEX >= 0x070600
     mkGFA.Build(OCCTProgressIndicator::getAppIndicator().Start());
 #else
@@ -4366,7 +4366,7 @@ TopoShape& TopoShape::makeElementLoft(
     IsSolid isSolid,
     IsRuled isRuled,
     IsClosed isClosed,
-    Standard_Integer maxDegree,
+    int maxDegree,
     const char* op
 )
 {
@@ -4432,7 +4432,7 @@ TopoShape& TopoShape::makeElementLoft(
         }
     }
 
-    Standard_Boolean anIsCheck = Standard_True;
+    bool anIsCheck = true;
     aGenerator.CheckCompatibility(anIsCheck);  // use BRepFill_CompatibleWires on profiles. force
                                                // #edges, orientation, "origin" to match.
 
@@ -4468,7 +4468,7 @@ TopoShape& TopoShape::makeElementPrismUntil(
     const TopoShape& __uptoface,
     const gp_Dir& direction,
     PrismMode Mode,
-    Standard_Boolean checkLimits,
+    bool checkLimits,
     const char* op
 )
 {
@@ -4494,7 +4494,7 @@ TopoShape& TopoShape::makeElementPrismUntil(
         // to work as expected.
         BRep_Builder builder;
         _uptoface = _uptoface.makeElementCopy();
-        builder.NaturalRestriction(TopoDS::Face(_uptoface.getShape()), Standard_True);
+        builder.NaturalRestriction(TopoDS::Face(_uptoface.getShape()), true);
     }
 
     TopoShape uptoface(_uptoface);
@@ -4541,7 +4541,7 @@ TopoShape& TopoShape::makeElementPrismUntil(
             // Note: Using an unlimited face every time gives unnecessary failures for concave
             // faces
             TopLoc_Location loc = face.Location();
-            BRepAdaptor_Surface adapt(face, Standard_False);
+            BRepAdaptor_Surface adapt(face, false);
             // use the placement of the adapter, not of the upToFace
             loc = TopLoc_Location(adapt.Trsf());
             BRepBuilderAPI_MakeFace mkFace(adapt.Surface().Surface(), Precision::Confusion());
@@ -4620,7 +4620,7 @@ TopoShape& TopoShape::makeElementPrismUntil(
                     TopoDS::Face(supportFace.getShape()),
                     direction,
                     mode,
-                    Standard_False
+                    false
                 );
                 mode = PrismMode::FuseWithBase;
 
@@ -4693,7 +4693,7 @@ TopoShape& TopoShape::makeElementRevolution(
     const TopoDS_Face& uptoface,
     const char* face_maker,
     RevolMode Mode,
-    Standard_Boolean Modify,
+    bool Modify,
     const char* op
 )
 {
@@ -4960,7 +4960,7 @@ TopoShape& TopoShape::makeElementBSplineFace(
         auto edge = edges[0].getSubShape(TopAbs_EDGE, 1);
         auto e = TopoDS::Edge(edge);
         auto v = TopExp::FirstVertex(e);
-        Standard_Real first, last;
+        double first, last;
         Handle(Geom_Curve) curve = BRep_Tool::Curve(e, first, last);
 
         BRepBuilderAPI_MakeEdge mk1, mk2, mk3, mk4;
@@ -5040,7 +5040,7 @@ TopoShape& TopoShape::makeElementBSplineFace(
 
     Handle(Geom_Surface) aSurface;
 
-    Standard_Real u1, u2;
+    double u1, u2;
     if (keepBezier) {
         std::vector<Handle(Geom_BezierCurve)> curves;
         curves.reserve(4);
@@ -5139,7 +5139,7 @@ TopoShape& TopoShape::makeElementBSplineFace(
     }
 
     BRepBuilderAPI_MakeFace aFaceBuilder;
-    Standard_Real v1, v2;
+    double v1, v2;
     // transfer surface bounds to face
     aSurface->Bounds(u1, u2, v1, v2);
 
@@ -6008,8 +6008,8 @@ TopoShape& TopoShape::makeElementBoolean(
         }
     }
 
-    mk->SetRunParallel(Standard_True);
-    OSD_Parallel::SetUseOcctThreads(Standard_True);
+    mk->SetRunParallel(true);
+    OSD_Parallel::SetUseOcctThreads(true);
 
     mk->SetArguments(shapeArguments);
     mk->SetTools(shapeTools);

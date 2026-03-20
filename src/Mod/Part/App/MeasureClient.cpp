@@ -295,8 +295,8 @@ Part::VectorAdapter buildAdapter(const App::SubObjectT& subject)
     if (shapeType == TopAbs_EDGE) {
         TopoDS_Edge edge = TopoDS::Edge(shape);
         // make edge orientation so that end of edge closest to pick is head of vector.
-        TopoDS_Vertex firstVertex = TopExp::FirstVertex(edge, Standard_True);
-        TopoDS_Vertex lastVertex = TopExp::LastVertex(edge, Standard_True);
+        TopoDS_Vertex firstVertex = TopExp::FirstVertex(edge, true);
+        TopoDS_Vertex lastVertex = TopExp::LastVertex(edge, true);
         if (firstVertex.IsNull() || lastVertex.IsNull()) {
             return {};
         }

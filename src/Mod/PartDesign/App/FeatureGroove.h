@@ -123,7 +123,7 @@ protected:
         const gp_Ax1& ax1,
         RevolMethod method,
         RevolMode Mode,
-        Standard_Boolean Modify
+        bool Modify
     );
 
     /**

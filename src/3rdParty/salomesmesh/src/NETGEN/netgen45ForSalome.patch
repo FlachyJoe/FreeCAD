@@ -742,7 +742,7 @@ diff -Naur netgen-4.5.old/libsrc/occ/occgenmesh.cpp netgen-4.5.new/libsrc/occ/oc
 @@ -1075,7 +1077,6 @@
  		if (triangulation.IsNull()) continue;
  	      
- 		BRepAdaptor_Surface sf(face, Standard_True);
+ 		BRepAdaptor_Surface sf(face, true);
 -		BRepLProp_SLProps prop(sf, 2, 1e-5);
  		
  		int ntriangles = triangulation -> NbTriangles();
@@ -1052,7 +1052,7 @@ diff -Naur netgen-4.5.old/libsrc/occ/occmeshsurf.cpp netgen-4.5.new/libsrc/occ/o
 -  int MeshOptimize2dOCCSurfaces :: 
 -  CalcPointGeomInfo(int surfind, PointGeomInfo& gi, const Point3d& p) const
 -  {
--    Standard_Real u,v;
+-    double u,v;
 -
 -    gp_Pnt pnt(p.X(), p.Y(), p.Z());
 -

@@ -238,7 +238,7 @@ App::DocumentObjectExecReturn* Revolution::execute()
                     TopoDS::Face(upToFace.getShape()),
                     nullptr,
                     Part::RevolMode::FuseWithBase,
-                    Standard_True
+                    true
                 );
             }
             catch (Standard_Failure&) {
@@ -447,7 +447,7 @@ void Revolution::generateRevolution(
     const gp_Ax1& axis,
     RevolMethod method,
     RevolMode Mode,
-    Standard_Boolean Modify
+    bool Modify
 )
 {
     if (method == RevolMethod::ToFirst || method == RevolMethod::ToFace

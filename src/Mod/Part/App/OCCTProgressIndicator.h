@@ -40,12 +40,12 @@ public:
         : baseIndicator(indicator)
     {}
 
-    Standard_Boolean UserBreak() override
+    bool UserBreak() override
     {
         return baseIndicator.userBreak();
     }
 
-    void Show(const Message_ProgressScope& scope, const Standard_Boolean isForce) override
+    void Show(const Message_ProgressScope& scope, const bool isForce) override
     {
         float pos = -1;  // negative means indeterminate
         if (!scope.IsInfinite()) {

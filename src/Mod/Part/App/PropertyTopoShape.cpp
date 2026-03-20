@@ -143,7 +143,7 @@ Base::BoundBox3d PropertyPartShape::getBoundingBox() const
         Bnd_Box bounds;
         BRepBndLib::Add(_Shape.getShape(), bounds);
         bounds.SetGap(0.0);
-        Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
+        double xMin, yMin, zMin, xMax, yMax, zMax;
         bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
 
         box.MinX = xMin;
@@ -552,16 +552,16 @@ void PropertyPartShape::afterRestore()
 // to disable saving of triangulation
 //
 
-static Standard_Boolean BRepTools_Write(const TopoDS_Shape& Sh, const Standard_CString File)
+static bool BRepTools_Write(const TopoDS_Shape& Sh, const Standard_CString File)
 {
     std::ofstream os;
     OSD_OpenStream(os, File, std::ios::out);
 
     if (!os.rdbuf()->is_open()) {
-        return Standard_False;
+        return false;
     }
 
-    Standard_Boolean isGood = (os.good() && !os.eof());
+    bool isGood = (os.good() && !os.eof());
     if (!isGood) {
         return isGood;
     }
@@ -574,7 +574,7 @@ static Standard_Boolean BRepTools_Write(const TopoDS_Shape& Sh, const Standard_C
         VERSION_3 = 3
     };
 
-    BRepTools_ShapeSet SS(Standard_False);
+    BRepTools_ShapeSet SS(false);
     SS.SetFormatNb(VERSION_1);
     // SS.SetProgress(PR);
     SS.Add(Sh);

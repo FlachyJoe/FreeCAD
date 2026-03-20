@@ -87,7 +87,7 @@ PyObject* ShapeFix_SolidPy::perform(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean ok = getShapeFix_SolidPtr()->Perform();
+    bool ok = getShapeFix_SolidPtr()->Perform();
     return Py::new_reference_to(Py::Boolean(ok ? true : false));
 }
 

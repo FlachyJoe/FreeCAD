@@ -50,7 +50,7 @@ BRepOffsetAPI_MakeOffsetFix::BRepOffsetAPI_MakeOffsetFix() = default;
 
 BRepOffsetAPI_MakeOffsetFix::BRepOffsetAPI_MakeOffsetFix(
     const GeomAbs_JoinType Join,
-    const Standard_Boolean IsOpenResult
+    const bool IsOpenResult
 )
 {
     mkOffset.Init(Join, IsOpenResult);
@@ -96,7 +96,7 @@ void BRepOffsetAPI_MakeOffsetFix::AddWire(const TopoDS_Wire& Spine)
     myResult.Nullify();
 }
 
-void BRepOffsetAPI_MakeOffsetFix::Perform(const Standard_Real Offset, const Standard_Real Alt)
+void BRepOffsetAPI_MakeOffsetFix::Perform(const double Offset, const double Alt)
 {
     mkOffset.Perform(Offset, Alt);
 }
@@ -113,18 +113,18 @@ void BRepOffsetAPI_MakeOffsetFix::Build()
 void BRepOffsetAPI_MakeOffsetFix::Init(
     const TopoDS_Face& Spine,
     const GeomAbs_JoinType Join,
-    const Standard_Boolean IsOpenResult
+    const bool IsOpenResult
 )
 {
     mkOffset.Init(Spine, Join, IsOpenResult);
 }
 
-void BRepOffsetAPI_MakeOffsetFix::Init(const GeomAbs_JoinType Join, const Standard_Boolean IsOpenResult)
+void BRepOffsetAPI_MakeOffsetFix::Init(const GeomAbs_JoinType Join, const bool IsOpenResult)
 {
     mkOffset.Init(Join, IsOpenResult);
 }
 
-Standard_Boolean BRepOffsetAPI_MakeOffsetFix::IsDone() const
+bool BRepOffsetAPI_MakeOffsetFix::IsDone() const
 {
     return mkOffset.IsDone();
 }
@@ -228,7 +228,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetFix::Modified(const TopoDS_S
     return mkOffset.Modified(S);
 }
 
-Standard_Boolean BRepOffsetAPI_MakeOffsetFix::IsDeleted(const TopoDS_Shape& S)
+bool BRepOffsetAPI_MakeOffsetFix::IsDeleted(const TopoDS_Shape& S)
 {
     return mkOffset.IsDeleted(S);
 }

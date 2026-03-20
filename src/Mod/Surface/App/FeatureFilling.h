@@ -82,7 +82,7 @@ private:
         const App::PropertyLinkSubList& edges,
         const App::PropertyStringList& faces,
         const App::PropertyIntegerList& orders,
-        Standard_Boolean bnd
+        bool bnd
     );
     void addConstraints(
         BRepFill_Filling& builder,

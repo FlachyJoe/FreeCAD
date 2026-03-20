@@ -275,7 +275,7 @@ void ExtrusionHelper::makeDraft(
         std::vector<TopoDS_Shape> shells;
 
         for (auto& wires : extrusionSections) {
-            BRepOffsetAPI_ThruSections mkTS(isSolid, /*ruled=*/Standard_True, Precision::Confusion());
+            BRepOffsetAPI_ThruSections mkTS(isSolid, /*ruled=*/true, Precision::Confusion());
 
             for (auto& singleWire : wires) {
                 if (singleWire.ShapeType() == TopAbs_VERTEX) {
@@ -299,8 +299,8 @@ void ExtrusionHelper::makeDraft(
                 // we take every outer wire prism and cut subsequently all inner wires prisms from
                 // it every resulting shape is the final drafted extrusion shape
                 GProp_GProps tempProperties;
-                Standard_Real momentOfInertiaInitial;
-                Standard_Real momentOfInertiaFinal;
+                double momentOfInertiaInitial;
+                double momentOfInertiaFinal;
                 std::vector<bool>::iterator isInnerWireIterator = isInnerWire.begin();
                 std::vector<bool>::iterator isInnerWireIteratorLoop;
                 for (auto itOuter = shells.begin(); itOuter != shells.end(); ++itOuter) {
@@ -386,8 +386,8 @@ void ExtrusionHelper::checkInnerWires(
         }
     }
     GProp_GProps tempProperties;
-    Standard_Real momentOfInertiaInitial;
-    Standard_Real momentOfInertiaFinal;
+    double momentOfInertiaInitial;
+    double momentOfInertiaFinal;
     size_t numCheckWires = 0;
     std::vector<bool>::iterator isInnerWireIterator = isInnerWire.begin();
     std::vector<bool>::iterator toCheckIterator = checklist.begin();
@@ -692,8 +692,8 @@ void ExtrusionHelper::makeElementDraft(
 
             // make loft
             BRepOffsetAPI_ThruSections mkGenerator(
-                params.solid ? Standard_True : Standard_False,
-                /*ruled=*/Standard_True
+                params.solid ? true : false,
+                /*ruled=*/true
             );
             for (auto& s : list_of_sections) {
                 mkGenerator.AddWire(TopoDS::Wire(s.getShape()));

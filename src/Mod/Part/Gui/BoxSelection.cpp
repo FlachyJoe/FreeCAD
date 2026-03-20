@@ -174,7 +174,7 @@ void BoxSelection::addShapeToSelection(
             xp.Next();
         }
 
-        for (Standard_Integer k = 1; k <= M.Extent(); k++) {
+        for (int k = 1; k <= M.Extent(); k++) {
             const TopoDS_Shape& subshape = M(k);
 
             TopExp_Explorer xp_vertex(subshape, TopAbs_VERTEX);

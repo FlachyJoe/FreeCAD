@@ -96,8 +96,8 @@ int RectangularTrimmedSurfacePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             &PyBool_Type,
             &sense
         )) {
-        Standard_Boolean UTrim = Base::asBoolean(utrim);
-        Standard_Boolean Sense = Base::asBoolean(sense);
+        bool UTrim = Base::asBoolean(utrim);
+        bool Sense = Base::asBoolean(sense);
         getGeomTrimmedSurfacePtr()->setHandle(new Geom_RectangularTrimmedSurface(
             Handle(Geom_Surface)::DownCast(
                 static_cast<GeometrySurfacePy*>(surf)->getGeomSurfacePtr()->handle()

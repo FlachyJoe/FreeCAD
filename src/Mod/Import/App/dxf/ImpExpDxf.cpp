@@ -119,7 +119,7 @@ Part::Ellipse* createEllipsePrimitive(const TopoDS_Edge& edge, App::Document* do
     }
 
     TopLoc_Location loc;
-    Standard_Real first, last;
+    double first, last;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve(edge, loc, first, last);
 
     if (aCurve->IsInstance(Geom_Ellipse::get_type_descriptor())) {
@@ -165,7 +165,7 @@ Part::Circle* createCirclePrimitive(const TopoDS_Edge& edge, App::Document* doc,
     }
 
     TopLoc_Location loc;
-    Standard_Real first, last;
+    double first, last;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve(edge, loc, first, last);
 
     if (aCurve->IsInstance(Geom_Circle::get_type_descriptor())) {
@@ -1133,9 +1133,9 @@ Handle(Geom_BSplineCurve) getSplineFromPolesAndKnots(struct SplineData& sd)
         }
     }
 
-    Standard_Boolean periodic = sd.flag == 2;
-    Handle(Geom_BSplineCurve)
-        geom = new Geom_BSplineCurve(occpoles, occweights, occknots, occmults, sd.degree, periodic);
+    bool periodic = sd.flag == 2;
+    Handle(Geom_BSplineCurve) geom
+        = new Geom_BSplineCurve(occpoles, occweights, occknots, occmults, sd.degree, periodic);
     return geom;
 }
 
@@ -1163,7 +1163,7 @@ Handle(Geom_BSplineCurve) getInterpolationSpline(struct SplineData& sd)
         fitpoints->ChangeValue(index++).SetZ(coordinate);
     }
 
-    Standard_Boolean periodic = sd.flag == 2;
+    bool periodic = sd.flag == 2;
     GeomAPI_Interpolate interp(fitpoints, periodic, Precision::Confusion());
     interp.Perform();
     return interp.Curve();
@@ -1577,11 +1577,9 @@ std::string ImpExpDxfRead::Deformat(const char* text)
                     longescape = false;
                 }
             }
-            else if (
-                (ch == 'H') || (ch == 'h') || (ch == 'Q') || (ch == 'q') || (ch == 'W')
-                || (ch == 'w') || (ch == 'F') || (ch == 'f') || (ch == 'A') || (ch == 'a')
-                || (ch == 'C') || (ch == 'c') || (ch == 'T') || (ch == 't')
-            ) {
+            else if ((ch == 'H') || (ch == 'h') || (ch == 'Q') || (ch == 'q') || (ch == 'W')
+                     || (ch == 'w') || (ch == 'F') || (ch == 'f') || (ch == 'A') || (ch == 'a')
+                     || (ch == 'C') || (ch == 'c') || (ch == 'T') || (ch == 't')) {
                 longescape = true;
             }
             else {
@@ -1960,8 +1958,8 @@ void ImpExpDxfWrite::exportBSpline(BRepAdaptor_Curve& c)
     double f, l;
     gp_Pnt s, ePt;
 
-    Standard_Real tol3D = 0.001;
-    Standard_Integer maxDegree = 3, maxSegment = 200;
+    double tol3D = 0.001;
+    int maxDegree = 3, maxSegment = 200;
     Handle(BRepAdaptor_HCurve) hCurve = new BRepAdaptor_HCurve(c);
     Approx_Curve3d approx(hCurve, tol3D, GeomAbs_C0, maxSegment, maxDegree);
     if (approx.IsDone() && approx.HasResult()) {
@@ -2010,7 +2008,7 @@ void ImpExpDxfWrite::exportBSpline(BRepAdaptor_Curve& c)
     sd.endtan = gPntTopoint3D(p);
 
     // next bit is from DrawingExport.cpp (Dan Falk?).
-    Standard_Integer m = 0;
+    int m = 0;
     if (spline->IsPeriodic()) {
         m = spline->NbPoles() + 2 * spline->Degree() - spline->Multiplicity(1) + 2;
     }

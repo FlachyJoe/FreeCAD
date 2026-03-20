@@ -32,7 +32,7 @@
 #if OCC_VERSION_HEX < 0x070800
 # include <Standard_Address.hxx>
 #endif
-#include <Standard_Boolean.hxx>
+#include <bool.hxx>
 #include <Standard_Byte.hxx>
 #include <Standard_Character.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -51,7 +51,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
-#include <Standard_Integer.hxx>
+#include <int.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_LicenseError.hxx>
 #include <Standard_LicenseNotFound.hxx>
@@ -72,7 +72,6 @@
 #include <Standard_PrimitiveTypes.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Stream.hxx>

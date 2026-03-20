@@ -426,7 +426,7 @@ Base::Placement AttachEngine::placementFactory(
     gp_Trsf Trf;
     Trf.SetTransformation(ax3);
     Trf.Invert();
-    Trf.SetScaleFactor(Standard_Real(1.0));
+    Trf.SetScaleFactor(double(1.0));
 
     Base::Matrix4D mtrx;
     TopoShape::convertToMatrix(Trf, mtrx);
@@ -571,9 +571,9 @@ eRefType AttachEngine::getShapeType(const TopoDS_Shape& sh)
             break;
         case TopAbs_COMPOUND: {
             const TopoDS_Compound& cmpd = TopoDS::Compound(sh);
-            TopoDS_Iterator it(cmpd, Standard_False, Standard_False);  // don't mess with placements,
-                                                                       // to hopefully increase speed
-            if (!it.More()) {  // empty compound
+            TopoDS_Iterator it(cmpd, false, false);  // don't mess with placements,
+                                                     // to hopefully increase speed
+            if (!it.More()) {                        // empty compound
                 return rtAnything;
             }
             const TopoDS_Shape& sh1 = it.Value();
@@ -593,7 +593,7 @@ eRefType AttachEngine::getShapeType(const TopoDS_Shape& sh)
             break;
         case TopAbs_FACE: {
             const TopoDS_Face& f = TopoDS::Face(sh);
-            BRepAdaptor_Surface surf(f, /*restriction=*/Standard_False);
+            BRepAdaptor_Surface surf(f, /*restriction=*/false);
             switch (surf.GetType()) {
                 case GeomAbs_Plane:
                     return rtFlatFace;
@@ -1495,9 +1495,9 @@ Base::Placement AttachEngine3D::_calculateAttachedPlacement(
                 // that is substantially different. The one that is different
                 // corresponds to a defined axis. We'll identify the different one by
                 // comparing differences.
-                Standard_Real I1, I2, I3;
+                double I1, I2, I3;
                 pr.Moments(I1, I2, I3);
-                Standard_Real d12, d23, d31;
+                double d12, d23, d31;
                 d12 = fabs(I1 - I2);
                 d23 = fabs(I2 - I3);
                 d31 = fabs(I3 - I1);
@@ -1564,7 +1564,7 @@ Base::Placement AttachEngine3D::_calculateAttachedPlacement(
                 }
             }
 
-            Standard_Boolean ok = plane.Direct();
+            bool ok = plane.Direct();
             if (!ok) {
                 // toggle if plane has a left-handed coordinate system
                 plane.UReverse();
@@ -1631,7 +1631,7 @@ Base::Placement AttachEngine3D::_calculateAttachedPlacement(
             BRepAdaptor_Surface surf(face);
             BRepLProp_SLProps prop(surf, u, v, 1, Precision::Confusion());
             gp_Dir dirX;
-            Standard_Boolean done;
+            bool done;
 
             Tools::getNormal(face, u, v, Precision::Confusion(), SketchNormal, done);
 
@@ -2226,7 +2226,7 @@ Base::Placement AttachEngine3D::_calculateAttachedPlacement(
 
                         // Project midPnt onto the cylinder axis to get an axis-center point near face
                         const gp_Vec v(origin, midPnt);
-                        const Standard_Real t = v.Dot(gp_Vec(axisDir));  // scalar projection onto axis
+                        const double t = v.Dot(gp_Vec(axisDir));  // scalar projection onto axis
                         const gp_Pnt axisCenter = origin.Translated(gp_Vec(axisDir) * t);
 
                         placement.setPosition(Base::convertTo<Base::Vector3d>(axisCenter));
@@ -2524,9 +2524,9 @@ Base::Placement AttachEngineLine::_calculateAttachedPlacement(
                 // query moments, to use them to check if axis is defined
                 // See AttachEngine3D::calculateAttachedPlacement:case mmInertial for comment
                 // explaining these comparisons
-                Standard_Real I1, I2, I3;
+                double I1, I2, I3;
                 pr.Moments(I1, I2, I3);
-                Standard_Real d12, d23, d31;
+                double d12, d23, d31;
                 d12 = fabs(I1 - I2);
                 d23 = fabs(I2 - I3);
                 d31 = fabs(I3 - I1);
@@ -2719,7 +2719,7 @@ Base::Placement AttachEngineLine::_calculateAttachedPlacement(
                     );
                 }
 
-                const Standard_Integer intLines = intersector.NbLines();
+                const int intLines = intersector.NbLines();
                 if (intLines == 0) {
                     throw Base::ValueError(
                         "AttachEngineLine::calculateAttachedPlacement: The two "

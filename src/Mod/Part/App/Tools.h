@@ -136,10 +136,10 @@ class PartExport Tools
 public:
     Handle(Geom_Surface) makeSurface(
         const TColStd_ListOfTransient& theBoundaries,
-        const Standard_Real theTol,
-        const Standard_Integer theNbPnts,
-        const Standard_Integer theNbIter,
-        const Standard_Integer theMaxDeg
+        const double theTol,
+        const int theNbPnts,
+        const int theNbIter,
+        const int theMaxDeg
     );
     /*!
      * @brief getTriangulation
@@ -263,9 +263,9 @@ public:
         const Handle(Geom_Surface) & surf,
         double u,
         double v,
-        const Standard_Real tol,
+        const double tol,
         gp_Dir& dir,
-        Standard_Boolean& done
+        bool& done
     );
     /*! \brief getNormal
      * Returns the normal at the given parameters on the face and the state of the calculation.
@@ -281,9 +281,9 @@ public:
         const TopoDS_Face& face,
         double u,
         double v,
-        const Standard_Real tol,
+        const double tol,
         gp_Dir& dir,
-        Standard_Boolean& done
+        bool& done
     );
     /*!
      * \brief fromPlacement
@@ -346,7 +346,7 @@ public:
      *
      * \return The computed deflection value.
      */
-    static Standard_Real getDeflection(const Bnd_Box& bounds, double deviation);
+    static double getDeflection(const Bnd_Box& bounds, double deviation);
 
     /**
      * \brief Computes the deflection value for a given shape and a deviation factor.
@@ -360,7 +360,7 @@ public:
      *
      * \return The computed deflection value.
      */
-    static Standard_Real getDeflection(const TopoDS_Shape& shape, double deviation);
+    static double getDeflection(const TopoDS_Shape& shape, double deviation);
 };
 
 }  // namespace Part

@@ -24,7 +24,6 @@
  ***************************************************************************/
 
 #include <Precision.hxx>
-#include <Standard_Real.hxx>
 
 #include "Blending/BlendPoint.h"
 #include "Blending/BlendPointPy.h"

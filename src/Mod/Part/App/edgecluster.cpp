@@ -83,10 +83,10 @@ void Edgecluster::Perform()
         }
         const gp_Pnt& firstPoint = iter->first;
         gp_Pnt currentPoint = firstPoint;
-        Standard_Boolean toContinue;
+        bool toContinue;
         do {
             toContinue = PerformEdges(currentPoint);
-        } while (toContinue == Standard_True);
+        } while (toContinue == true);
         // Store the current adjacent edges as a cluster
         m_final_cluster.push_back(m_edges);
         // and continue now with the still existing edges in the m_vertices
@@ -198,8 +198,8 @@ bool Edgecluster::IsValidEdge(const TopoDS_Edge& edge)
 
     BRepAdaptor_Curve bac(edge);
 
-    Standard_Real fparam = bac.FirstParameter();
-    Standard_Real lparam = bac.LastParameter();
+    double fparam = bac.FirstParameter();
+    double lparam = bac.LastParameter();
 
     gp_Pnt fpoint = bac.Value(fparam);
     gp_Pnt lpoint = bac.Value(lparam);
@@ -210,7 +210,7 @@ bool Edgecluster::IsValidEdge(const TopoDS_Edge& edge)
 
     gp_Pnt mpoint = bac.Value((fparam + lparam) * 0.5);
 
-    Standard_Real dist = mpoint.Distance(lpoint);
+    double dist = mpoint.Distance(lpoint);
     if (dist <= 1e-5) {
         return false;
     }

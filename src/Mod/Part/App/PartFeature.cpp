@@ -1043,7 +1043,7 @@ static TopoShape _getTopoShape(
                         gp_Lin(gp_Pnt(0, 0, 0), Base::convertTo<gp_Dir>(dir))
                     );
                     _shape = builder.Shape();
-                    _shape.Infinite(Standard_True);
+                    _shape.Infinite(true);
                 }
                 shape = TopoShape(tag, hasher, _shape);
             }
@@ -1056,7 +1056,7 @@ static TopoShape _getTopoShape(
                         gp_Pln(gp_Pnt(0, 0, 0), Base::convertTo<gp_Dir>(dir))
                     );
                     _shape = builder.Shape();
-                    _shape.Infinite(Standard_True);
+                    _shape.Infinite(true);
                 }
                 shape = TopoShape(tag, hasher, _shape);
             }
@@ -1078,7 +1078,7 @@ static TopoShape _getTopoShape(
                         if (_shape.IsNull()) {
                             BRepBuilderAPI_MakeEdge builder(gp_Lin(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
                             _shape = builder.Shape();
-                            _shape.Infinite(Standard_True);
+                            _shape.Infinite(true);
                         }
                         shape = TopoShape(tag, hasher, _shape);
                     }
@@ -1087,7 +1087,7 @@ static TopoShape _getTopoShape(
                         if (_shape.IsNull()) {
                             BRepBuilderAPI_MakeVertex builder(gp_Pnt(0, 0, 0));
                             _shape = builder.Shape();
-                            _shape.Infinite(Standard_True);
+                            _shape.Infinite(true);
                         }
                         shape = TopoShape(tag, hasher, _shape);
                     }
@@ -1097,7 +1097,7 @@ static TopoShape _getTopoShape(
                     if (_shape.IsNull()) {
                         BRepBuilderAPI_MakeFace builder(gp_Pln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
                         _shape = builder.Shape();
-                        _shape.Infinite(Standard_True);
+                        _shape.Infinite(true);
                     }
                     shape = TopoShape(tag, hasher, _shape);
                 }
@@ -1780,8 +1780,8 @@ bool Feature::getCameraAlignmentDirection(
 
             // Try to find a second alignment direction
             // Use the longest straight edge for horizontal or vertical alignment
-            std::optional<std::tuple<TopoDS_Shape, Standard_Real>> longestEdge;  // Tuple of (shape,
-                                                                                 // length of edge)
+            std::optional<std::tuple<TopoDS_Shape, double>> longestEdge;  // Tuple of (shape,
+                                                                          // length of edge)
             for (TopExp_Explorer Ex(face, TopAbs_EDGE); Ex.More(); Ex.Next()) {
                 const auto edge = TopoDS::Edge(Ex.Current());
                 const auto edgeTopoShape = TopoShape(edge);
@@ -1823,16 +1823,16 @@ bool Feature::getCameraAlignmentDirection(
     if (shape.ShapeType() == TopAbs_FACE && !topoShape.isPlanar()) {
         const auto face = TopoDS::Face(shape);
         BRepGProp_Face faceProp(face);
-        Standard_Real u1, u2, v1, v2;
+        double u1, u2, v1, v2;
         faceProp.Bounds(u1, u2, v1, v2);
-        Standard_Real uMid = (u1 + u2) / 2.0, vMid = (v1 + v2) / 2.0;
+        double uMid = (u1 + u2) / 2.0, vMid = (v1 + v2) / 2.0;
         gp_Pnt p;
         gp_Vec n;
         faceProp.Normal(uMid, vMid, p, n);
         if (n.Magnitude() <= Precision::Confusion()) {
             // If center point is problematic (e.g. on seam), try corners of param bounds
-            Standard_Real uTest[4] = {u1, u2, u1, u2};
-            Standard_Real vTest[4] = {v1, v2, v2, v1};
+            double uTest[4] = {u1, u2, u1, u2};
+            double vTest[4] = {v1, v2, v2, v1};
             for (int i = 0; i < 4; ++i) {
                 faceProp.Normal(uTest[i], vTest[i], p, n);
                 if (n.Magnitude() > Precision::Confusion()) {
@@ -1846,7 +1846,7 @@ bool Feature::getCameraAlignmentDirection(
         n.Normalize();
         directionZ = Base::Vector3d(n.X(), n.Y(), n.Z());
         // Use longest straight edge on this face (if any) for orientation reference
-        std::optional<std::tuple<TopoDS_Shape, Standard_Real>> longestEdge;
+        std::optional<std::tuple<TopoDS_Shape, double>> longestEdge;
         for (TopExp_Explorer Ex(face, TopAbs_EDGE); Ex.More(); Ex.Next()) {
             const auto edge = TopoDS::Edge(Ex.Current());
             const auto edgeTopoShape = TopoShape(edge);
@@ -1857,7 +1857,7 @@ bool Feature::getCameraAlignmentDirection(
             BRepGProp::LinearProperties(edge, props);
             const auto length = props.Mass();
             if (!longestEdge.has_value() || length > std::get<1>(longestEdge.value())) {
-                longestEdge = std::tuple<TopoDS_Shape, Standard_Real>(edge, length);
+                longestEdge = std::tuple<TopoDS_Shape, double>(edge, length);
             }
         }
         if (!longestEdge.has_value()) {
@@ -2120,7 +2120,7 @@ bool Part::checkIntersection(
         if (xp.More()) {
             // At least one solid
             xp.Next();
-            return (xp.More() == Standard_False);
+            return (xp.More() == false);
         }
         else {
             return false;
@@ -2139,6 +2139,6 @@ bool Part::checkIntersection(
         // Did we get a solid?
         TopExp_Explorer xp;
         xp.Init(mkCommon.Shape(), TopAbs_SOLID);
-        return (xp.More() == Standard_True);
+        return (xp.More() == true);
     }
 }

@@ -50,7 +50,7 @@ public:
     Standard_EXPORT FCBRepAlgoAPI_Section(
         const TopoDS_Shape& S1,
         const TopoDS_Shape& S2,
-        const Standard_Boolean PerformNow = Standard_True
+        const bool PerformNow = true
     );
 
     //! Constructor with two shapes
@@ -62,7 +62,7 @@ public:
     Standard_EXPORT FCBRepAlgoAPI_Section(
         const TopoDS_Shape& S1,
         const gp_Pln& Pl,
-        const Standard_Boolean PerformNow = Standard_True
+        const bool PerformNow = true
     );
 
     // set fuzzyness based on size

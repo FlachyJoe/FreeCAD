@@ -218,7 +218,7 @@ PartExport std::list<TopoDS_Edge> sort_Edges(double tol3d, std::list<TopoDS_Edge
             }
             else if (pEI->v2.SquareDistance(last) <= tol3d) {
                 last = pEI->v1;
-                Standard_Real first, last;
+                double first, last;
                 const Handle(Geom_Curve) & curve = BRep_Tool::Curve(pEI->edge, first, last);
                 first = curve->ReversedParameter(first);
                 last = curve->ReversedParameter(last);
@@ -231,7 +231,7 @@ PartExport std::list<TopoDS_Edge> sort_Edges(double tol3d, std::list<TopoDS_Edge
             }
             else if (pEI->v1.SquareDistance(first) <= tol3d) {
                 first = pEI->v2;
-                Standard_Real first, last;
+                double first, last;
                 const Handle(Geom_Curve) & curve = BRep_Tool::Curve(pEI->edge, first, last);
                 first = curve->ReversedParameter(first);
                 last = curve->ReversedParameter(last);
@@ -1057,7 +1057,7 @@ private:
             std::vector<Poly_Triangle> facets;
             if (Tools::getTriangulation(currentFace, points, facets)) {
                 for (const auto& it : facets) {
-                    Standard_Integer n1, n2, n3;
+                    int n1, n2, n3;
                     it.Get(n1, n2, n3);
 
                     gp_Pnt p1 = points[n1];
@@ -1880,8 +1880,8 @@ private:
 
         try {
             TopoShape helix;
-            Standard_Boolean anIsLeft = Base::asBoolean(pleft);
-            Standard_Boolean anIsVertHeight = Base::asBoolean(pvertHeight);
+            bool anIsLeft = Base::asBoolean(pleft);
+            bool anIsVertHeight = Base::asBoolean(pvertHeight);
             TopoDS_Shape wire = helix.makeHelix(pitch, height, radius, angle, anIsLeft, anIsVertHeight);
             return Py::asObject(new TopoShapeWirePy(new TopoShape(wire)));
         }
@@ -1901,7 +1901,7 @@ private:
 
         try {
             TopoShape helix;
-            Standard_Boolean anIsLeft = Base::asBoolean(pleft);
+            bool anIsLeft = Base::asBoolean(pleft);
             TopoDS_Shape wire = helix.makeLongHelix(pitch, height, radius, angle, anIsLeft);
             return Py::asObject(new TopoShapeWirePy(new TopoShape(wire)));
         }
@@ -2193,7 +2193,7 @@ private:
                                          {mShape,
                                           *static_cast<TopoShapePy*>(profile)->getTopoShapePtr()},
                                          Part::MakeSolid::noSolid,
-                                         Standard_False,
+                                         false,
                                          TransitionMode::Transformed,
                                          nullptr,
                                          tolerance
@@ -2233,9 +2233,9 @@ private:
             )) {
             throw Py::Exception();
         }
-        Standard_Boolean anIsSolid = PyObject_IsTrue(psolid) ? Standard_True : Standard_False;
-        Standard_Boolean anIsRuled = PyObject_IsTrue(pruled) ? Standard_True : Standard_False;
-        Standard_Boolean anIsClosed = PyObject_IsTrue(pclosed) ? Standard_True : Standard_False;
+        bool anIsSolid = PyObject_IsTrue(psolid) ? true : false;
+        bool anIsRuled = PyObject_IsTrue(pruled) ? true : false;
+        bool anIsClosed = PyObject_IsTrue(pclosed) ? true : false;
         return shape2pyshape(
             TopoShape().makeElementLoft(
                 getPyShapes(pcObj),

@@ -212,7 +212,7 @@ PyObject* HLRBRep_PolyAlgoPy::moreHide(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean more = getHLRBRep_PolyAlgoPtr()->MoreHide();
+    bool more = getHLRBRep_PolyAlgoPtr()->MoreHide();
     return Py_BuildValue("O", (more ? Py_True : Py_False));
 }
 
@@ -242,7 +242,7 @@ PyObject* HLRBRep_PolyAlgoPy::moreShow(PyObject* args)
         return nullptr;
     }
 
-    Standard_Boolean more = getHLRBRep_PolyAlgoPtr()->MoreShow();
+    bool more = getHLRBRep_PolyAlgoPtr()->MoreShow();
     return Py_BuildValue("O", (more ? Py_True : Py_False));
 }
 

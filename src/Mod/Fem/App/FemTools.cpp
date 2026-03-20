@@ -97,7 +97,7 @@ bool Fem::Tools::isPlanar(const TopoDS_Face& face)
                 for (int j = poles.LowerCol(); j < poles.UpperCol(); j++) {
                     // are control points coplanar?
                     const gp_Pnt& pole = poles(i, j);
-                    Standard_Real dist = plane.Distance(pole);
+                    double dist = plane.Distance(pole);
                     if (dist > Precision::Confusion()) {
                         return false;
                     }
@@ -129,7 +129,7 @@ bool Fem::Tools::isPlanar(const TopoDS_Face& face)
                 for (int j = poles.LowerCol(); j < poles.UpperCol(); j++) {
                     // are control points coplanar?
                     const gp_Pnt& pole = poles(i, j);
-                    Standard_Real dist = plane.Distance(pole);
+                    double dist = plane.Distance(pole);
                     if (dist > Precision::Confusion()) {
                         return false;
                     }
@@ -212,7 +212,7 @@ bool Fem::Tools::isLinear(const TopoDS_Edge& edge)
 
             for (int i = 2; i < spline->NbPoles(); i++) {
                 // are control points collinear?
-                Standard_Real dist = line.Distance(spline->Pole(i));
+                double dist = line.Distance(spline->Pole(i));
                 if (dist > Precision::Confusion()) {
                     return false;
                 }
@@ -234,7 +234,7 @@ bool Fem::Tools::isLinear(const TopoDS_Edge& edge)
 
             for (int i = 2; i < bezier->NbPoles(); i++) {
                 // are control points collinear?
-                Standard_Real dist = line.Distance(bezier->Pole(i));
+                double dist = line.Distance(bezier->Pole(i));
                 if (dist > Precision::Confusion()) {
                     return false;
                 }

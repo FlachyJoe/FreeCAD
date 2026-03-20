@@ -1076,7 +1076,7 @@ void ViewProviderPartExt::setupCoinGeometry(
     std::set<int> faceEdges;
 
     // calculating the deflection value
-    Standard_Real deflection = Part::Tools::getDeflection(shape, deviation);
+    double deflection = Part::Tools::getDeflection(shape, deviation);
 
     // Since OCCT 7.6 a value of equal 0 is not allowed any more, this can happen if a single
     // vertex should be displayed.
@@ -1090,20 +1090,20 @@ void ViewProviderPartExt::setupCoinGeometry(
     // deflection = std::min(deflection, 20.0);
 
     // create or use the mesh on the data structure
-    Standard_Real AngDeflectionRads = Base::toRadians(angularDeflection);
+    double AngDeflectionRads = Base::toRadians(angularDeflection);
 
     IMeshTools_Parameters meshParams;
     meshParams.Deflection = deflection;
-    meshParams.Relative = Standard_False;
+    meshParams.Relative = false;
     meshParams.Angle = AngDeflectionRads;
-    meshParams.InParallel = Standard_True;
-    meshParams.AllowQualityDecrease = Standard_True;
+    meshParams.InParallel = true;
+    meshParams.AllowQualityDecrease = true;
 
     // Clear triangulation and PCurves from geometry which can slow down the process
 #if OCC_VERSION_HEX < 0x070600
     BRepTools::Clean(shape);
 #else
-    BRepTools::Clean(shape, Standard_True);
+    BRepTools::Clean(shape, true);
 #endif
 
     BRepMesh_IncrementalMesh(shape, meshParams);
@@ -1210,7 +1210,7 @@ void ViewProviderPartExt::setupCoinGeometry(
 
         // getting the transformation of the shape/face
         gp_Trsf myTransf;
-        Standard_Boolean identity = true;
+        bool identity = true;
         if (!aLoc.IsIdentity()) {
             identity = false;
             myTransf = aLoc.Transformation();
@@ -1237,7 +1237,7 @@ void ViewProviderPartExt::setupCoinGeometry(
 
         for (int g = 1; g <= nbTriInFace; g++) {
             // Get the triangle
-            Standard_Integer N1, N2, N3;
+            int N1, N2, N3;
 #if OCC_VERSION_HEX < 0x070600
             Triangles(g).Get(N1, N2, N3);
 #else
@@ -1246,7 +1246,7 @@ void ViewProviderPartExt::setupCoinGeometry(
 
             // change orientation of the triangle if the face is reversed
             if (orient != TopAbs_FORWARD) {
-                Standard_Integer tmp = N1;
+                int tmp = N1;
                 N1 = N2;
                 N2 = tmp;
             }
@@ -1326,7 +1326,7 @@ void ViewProviderPartExt::setupCoinGeometry(
 
                 // getting the indexes of the edge polygon
                 const TColStd_Array1OfInteger& indices = aPoly->Nodes();
-                for (Standard_Integer i = indices.Lower(); i <= indices.Upper(); i++) {
+                for (int i = indices.Lower(); i <= indices.Upper(); i++) {
                     int nodeIndex = indices(i);
                     int index = faceNodeOffset + nodeIndex - 1;
                     lineSetMap[edgeIndex].push_back(index);
@@ -1362,7 +1362,7 @@ void ViewProviderPartExt::setupCoinGeometry(
     // handling of the free edges
     for (int i = 1; i <= edgeMap.Extent(); i++) {
         const TopoDS_Edge& aEdge = TopoDS::Edge(edgeMap(i));
-        Standard_Boolean identity = true;
+        bool identity = true;
         gp_Trsf myTransf;
         TopLoc_Location aLoc;
 
@@ -1380,7 +1380,7 @@ void ViewProviderPartExt::setupCoinGeometry(
                 int nbNodesInEdge = aPoly->NbNodes();
 
                 gp_Pnt pnt;
-                for (Standard_Integer j = 1; j <= nbNodesInEdge; j++) {
+                for (int j = 1; j <= nbNodesInEdge; j++) {
                     pnt = aNodes(j);
                     if (!identity) {
                         pnt.Transform(myTransf);
